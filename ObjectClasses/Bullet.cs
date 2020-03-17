@@ -11,6 +11,13 @@ namespace ObjectClasses
         public int Curner;
         const int Size = 5, Speed = 3;
         public double X, Y;
+        public Person ParentPerson;
+        public Bullet()
+        { }
+        public Bullet(Person _P)
+        {
+            ParentPerson = _P;
+        }
 
         void CountCoordinats(out double NextX, out double NextY)
         {

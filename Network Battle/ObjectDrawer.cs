@@ -10,7 +10,7 @@ namespace Network_Battle
 {
    public class ObjectDrawer : IDisposable
     {
-        List<ObjectForDraw> ObjectTicks;
+        internal List<ObjectForDraw> ObjectTicks;
         Thread ThObjectDrawer;
 
         public ObjectDrawer(Image Bitmap,MainWindow.AddToDrawList ev)

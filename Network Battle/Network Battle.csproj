@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BulletDrawTickImage.cs" />
+    <Compile Include="IntersectController.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,9 +84,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resourses\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ObjectClasses\ObjectClasses.csproj">
       <Project>{aec8bf3a-0e32-4f8c-a5ec-4a6ae9bc1e6a}</Project>

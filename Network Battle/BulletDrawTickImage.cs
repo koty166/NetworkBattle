@@ -10,19 +10,19 @@ namespace Network_Battle
     {
         SolidBrush Brash;
         internal Bullet Bul;
-        int Width, Height;
+        int ControlWidth, ControlHeight;
         internal BulletDrawTickImage()
         { }
-        internal BulletDrawTickImage(int _Width, int _Height, Image Bitmap , Bullet _Bul) : base(Bitmap)
+        internal BulletDrawTickImage(int _ControlWidth, int _ControlHeight, Image Bitmap , Bullet _Bul) : base(Bitmap)
         {
             Brash = new SolidBrush(Color.Black);
             Bul = _Bul;
-            Width = _Width;
-            Height = _Height;
+            ControlWidth = _ControlWidth;
+            ControlHeight = _ControlHeight;
         }
         internal override void Draw(bool IsNeedToDraw)
         {
-            if (!Bul.Tick(new Rectangle(0, 0, Width, Height)))
+            if (!Bul.Tick(new Rectangle(0, 0, ControlWidth, ControlHeight)))
             {
                 IsNeedToDestroy = true;
                 return;

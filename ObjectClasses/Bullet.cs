@@ -12,6 +12,7 @@ namespace ObjectClasses
         const int Size = 5, Speed = 3;
         public double X, Y;
         public Person ParentPerson;
+
         public Bullet()
         { }
         public Bullet(Person _P)

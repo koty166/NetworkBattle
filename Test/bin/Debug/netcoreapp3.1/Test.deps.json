@@ -1,0 +1,75 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "Test/1.0.0": {
+        "dependencies": {
+          "NetworkLibrary": "1.0.0",
+          "ObjectClasses": "1.0.0"
+        },
+        "runtime": {
+          "Test.dll": {}
+        }
+      },
+      "Network Battle/1.0.0": {
+        "dependencies": {
+          "ObjectClasses": "1.0.0",
+          "Tools": "1.0.0"
+        },
+        "runtime": {
+          "Network Battle.exe": {}
+        }
+      },
+      "NetworkLibrary/1.0.0": {
+        "dependencies": {
+          "Network Battle": "1.0.0",
+          "ObjectClasses": "1.0.0"
+        },
+        "runtime": {
+          "NetworkLibrary.dll": {}
+        }
+      },
+      "ObjectClasses/1.0.0": {
+        "runtime": {
+          "ObjectClasses.dll": {}
+        }
+      },
+      "Tools/1.0.0": {
+        "runtime": {
+          "Tools.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Test/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Network Battle/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "NetworkLibrary/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ObjectClasses/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Tools/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

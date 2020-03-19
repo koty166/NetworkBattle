@@ -24,8 +24,62 @@ namespace Network_Battle
         Person LocalPerson , LocalEnemy;
         ObjectDrawer ObjDraw;
         IntersectController IC;
+        List<string> Animations = new List<string>();
+        List<int> AnimationAddr = new List<int>() { 0 };
+        List<Person> PersonList = new List<Person>();
+
+        public delegate void PackageSave(object Package, bool IsBullet);
+        public event PackageSave PackgeWasGot;
+
         public delegate void AddToDrawList(Person _p, int _AnimL, ref Image[] Ims, Image Bitmap, int _Pointer = 0);
         public event AddToDrawList EventAddToDrawList;
+
+        Person GetPersonByID(int ID)
+        {
+            foreach (var i in PersonList)
+            {
+                if (i.ID == ID)
+                    return i;
+            }
+            return null;
+        }
+
+        void AddNetObject(object Package,bool IsBullet)
+        {
+            if(IsBullet)
+            {
+                BulletNetDataPackage Data = (BulletNetDataPackage)Package;
+                Person Per = GetPersonByID(Data.ParentPersonID);
+
+                if (Per == null)
+                    return;
+
+                Bullet b = new Bullet(Per)
+                {
+                    Curner = Data.Curner,
+                    X = Data.X,
+                    Y = Data.Y
+                };
+
+                ObjDraw.AddToObjectTicksList(Width,Height,BattleField.Image,b);
+                
+            }
+            else
+            {
+                PersonNetDataPackage Data = (PersonNetDataPackage)Package;
+                Person Per = GetPersonByID(Data.PersonID);
+
+                if (Per == null)
+                    return;
+
+                Per.X = Data.X;
+                Per.Y = Data.Y;
+                Per.XSpeed = Data.XSpeed;
+                Per.YSpeed = Data.YSpeed;
+
+                ObjDraw.AddToObjectTicksList(Per,Data.AnimAddr,Data.AnimLenght,ref Anims,BattleField.Image);
+            }
+        }
 
         void GetPointToDrawBullet(ref double X, ref double Y , double Curner)
         {
@@ -142,7 +196,6 @@ namespace Network_Battle
         Image[] LoadAnimations(string[] AnimationPath)
         {
             Image[] Ims = new Image[AnimationPath.Length];
-            Ims = new Image[AnimationPath.Length];
 
             for (int i = 0; i < AnimationPath.Length; i++)
                 Ims[i] = Image.FromFile(AnimationPath[i]);
@@ -150,13 +203,13 @@ namespace Network_Battle
             return Ims;
         }
 
-        void AddToPersonAnimation(string[] Paths , Person p)
+        void AddToAnimationList(string[] Paths)
         {
             foreach (var i in Paths)
             {
-                p.Animations.Add(i);
+                Animations.Add(i);
             }
-            p.AnimationAddr.Add(p.Animations.Count);
+            AnimationAddr.Add(Animations.Count);
             
         }
 
@@ -177,47 +230,34 @@ namespace Network_Battle
 
             ////////////////////////////////
             EventAddToDrawList += AddToDrList;
-            ObjDraw = new ObjectDrawer(BattleField.Image, EventAddToDrawList);
+            PackgeWasGot += AddNetObject;
 
+            ObjDraw = new ObjectDrawer(BattleField.Image, EventAddToDrawList);
             IC = new IntersectController(ObjDraw);
             ////////////////////////////////////////////////
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting e0*.bmp"), LocalPerson);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting se0*.bmp"), LocalPerson);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting s0*.bmp"), LocalPerson);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting sw0*.bmp"), LocalPerson);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting w0*.bmp"), LocalPerson);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting nw0*.bmp"), LocalPerson);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting n0*.bmp"), LocalPerson);
+            AddToAnimationList(Directory.GetFiles("Resourses//Person//", "shooting e0*.bmp"));
+            AddToAnimationList(Directory.GetFiles("Resourses//Person//", "shooting se0*.bmp"));
+            AddToAnimationList(Directory.GetFiles("Resourses//Person//", "shooting s0*.bmp"));
+            AddToAnimationList(Directory.GetFiles("Resourses//Person//", "shooting sw0*.bmp"));
+            AddToAnimationList(Directory.GetFiles("Resourses//Person//", "shooting w0*.bmp"));
+            AddToAnimationList(Directory.GetFiles("Resourses//Person//", "shooting nw0*.bmp"));
+            AddToAnimationList(Directory.GetFiles("Resourses//Person//", "shooting n0*.bmp"));
 
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "walking n0*.bmp"), LocalPerson);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "walking w0*.bmp"), LocalPerson);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "walking s0*.bmp"), LocalPerson);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "walking e0*.bmp"), LocalPerson);
+            AddToAnimationList(Directory.GetFiles("Resourses//Person//", "walking n0*.bmp"));
+            AddToAnimationList(Directory.GetFiles("Resourses//Person//", "walking w0*.bmp"));
+            AddToAnimationList(Directory.GetFiles("Resourses//Person//", "walking s0*.bmp"));
+            AddToAnimationList(Directory.GetFiles("Resourses//Person//", "walking e0*.bmp"));
 
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting e0*.bmp"), LocalEnemy);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting se0*.bmp"), LocalEnemy);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting s0*.bmp"), LocalEnemy);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting sw0*.bmp"), LocalEnemy);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting w0*.bmp"), LocalEnemy);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting nw0*.bmp"), LocalEnemy);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "shooting n0*.bmp"), LocalEnemy);
-
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "walking n0*.bmp"), LocalEnemy);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "walking w0*.bmp"), LocalEnemy);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "walking s0*.bmp"), LocalEnemy);
-            AddToPersonAnimation(Directory.GetFiles("Resourses//Person//", "walking e0*.bmp"), LocalEnemy);
-
-
-            Anims = LoadAnimations(LocalPerson.Animations.ToArray());
-
-
-            ObjDraw.AddToObjectTicksList(LocalEnemy,LocalEnemy.AnimationAddr[7],-1,ref Anims, BattleField.Image);
+            Anims = LoadAnimations(Animations.ToArray());
+//////////////
+            ObjDraw.AddToObjectTicksList(LocalEnemy,AnimationAddr[7],-1,ref Anims, BattleField.Image);
+        /////////////////
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             BattleField.Refresh();
-           // BattleField.Invalidate /////////////may be this?
+            // BattleField.Invalidate /////////////may be this?
         }
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -235,22 +275,22 @@ namespace Network_Battle
                 case Keys.W:
                     LocalPerson.YSpeed = -Speed;
                     LocalPerson.XSpeed = 0;
-                    ObjDraw.AddToObjectTicksList(LocalPerson, LocalPerson.AnimationAddr[7], 6, ref Anims, BattleField.Image);
+                    ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[7], 6, ref Anims, BattleField.Image);
                     break;
                 case Keys.A:
                     LocalPerson.XSpeed = -Speed;
                     LocalPerson.YSpeed = 0;
-                    ObjDraw.AddToObjectTicksList(LocalPerson, LocalPerson.AnimationAddr[8], 6, ref Anims, BattleField.Image);
+                    ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[8], 6, ref Anims, BattleField.Image);
                     break;
                 case Keys.S:
                     LocalPerson.YSpeed = Speed;
                     LocalPerson.XSpeed = 0;
-                    ObjDraw.AddToObjectTicksList(LocalPerson, LocalPerson.AnimationAddr[9], 6, ref Anims, BattleField.Image);
+                    ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[9], 6, ref Anims, BattleField.Image);
                     break;
                 case Keys.D:
                     LocalPerson.XSpeed = Speed;
                     LocalPerson.YSpeed = 0;
-                    ObjDraw.AddToObjectTicksList(LocalPerson, LocalPerson.AnimationAddr[10], 6, ref Anims, BattleField.Image);
+                    ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[10], 6, ref Anims, BattleField.Image);
                     break;   
             }
           

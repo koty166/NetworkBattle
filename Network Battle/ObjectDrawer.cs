@@ -36,8 +36,6 @@ namespace Network_Battle
             List<ObjectForDraw> ListObj = (List<ObjectForDraw>)((object[])m)[1];
 
             MainWindow.AddToDrawList Event = ((MainWindow.AddToDrawList)((object[])m)[2]);
-            //Image[] hj = null;
-            //.Invoke(null,0,ref hj, null);
 
             int Pause = 25;
             const int MaxTicks = 4;
@@ -100,10 +98,10 @@ namespace Network_Battle
             lock (ObjectTicks)
                 ObjectTicks.Add(new PersonDrawTickImage(_p, _AnimL, ref Ims, Bitmap, _Pointer));
         }
-        public void AddToObjectTicksList(int _Width, int _Height, Image Bitmap, Bullet _Bul)
+        public void AddToObjectTicksList(int ControlWidth, int ControlHeight, Image Bitmap, Bullet _Bul)
         {
             lock (ObjectTicks)
-                ObjectTicks.Add(new BulletDrawTickImage(_Width, _Height, Bitmap, _Bul));
+                ObjectTicks.Add(new BulletDrawTickImage(ControlWidth, ControlHeight, Bitmap, _Bul));
         }
     }
 }

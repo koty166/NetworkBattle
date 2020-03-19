@@ -3,5 +3,4 @@
 *.pdb
 */obj/*
 *.db
-*.resx
 .vs/

@@ -4,14 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CF19B012-EA25-4F93-9770-A11960123A81}</ProjectGuid>
+    <ProjectGuid>{6AECAC2D-8B50-4A9A-BBA5-5DDB46153734}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tools</RootNamespace>
-    <AssemblyName>Tools</AssemblyName>
+    <RootNamespace>NetworkLibrary</RootNamespace>
+    <AssemblyName>NetworkLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,7 +34,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,8 +42,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Redrawing.cs" />
+    <Compile Include="PackageReciever.cs" />
+    <Compile Include="IPackageSender.cs" />
+    <Compile Include="PackageSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Network Battle\Network Battle.csproj">
+      <Project>{5936f8b4-adb6-416e-8abc-07d0c8aa7403}</Project>
+      <Name>Network Battle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ObjectClasses\ObjectClasses.csproj">
+      <Project>{aec8bf3a-0e32-4f8c-a5ec-4a6ae9bc1e6a}</Project>
+      <Name>ObjectClasses</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,20 +8,13 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            Random r = new Random();
-            for (int i = 0; i < 100; i++)
+
+            foreach (var i in BitConverter.GetBytes(true))
             {
-
-
-                Person p = new Person()
-                {
-                    X = r.Next(0, 154165),
-                    Y = r.Next(0, 154165),
-                    XSpeed = r.Next(0, 154165),
-                    YSpeed = r.Next(0, 154165)
-                };
-                Console.WriteLine(p.GetHashCode());
+                Console.Write(i.ToString() + " ");
             }
+            
+           
 
 
         }

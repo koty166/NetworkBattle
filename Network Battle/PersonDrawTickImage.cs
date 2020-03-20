@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using Events;
 using System.Drawing;
 using ObjectClasses;
 
@@ -25,7 +25,7 @@ namespace Network_Battle
             Pointer = _Pointer;
         }
 
-        internal void InvokeEventForAddToDrawList (MainWindow.AddToDrawList AddEvent) =>
+        internal void InvokeEventForAddToDrawList (EventsClass.AddToDrawList AddEvent) =>
             AddEvent?.Invoke(_Person, -1, ref Anims, Bit, Pointer);
 
         override internal void Draw(bool IsNeedToDraw )

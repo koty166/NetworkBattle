@@ -10,5 +10,6 @@ namespace ObjectClasses
     {
         public int AnimAddr, AnimLenght, XSpeed, YSpeed, PersonID;
         public int X, Y;
+        public bool IsNewPerson;
     }
 }

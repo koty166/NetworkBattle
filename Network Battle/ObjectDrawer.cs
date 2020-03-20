@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Threading;
 using ObjectClasses;
-using System.Diagnostics;
+using Events;
 
 namespace Network_Battle
 {
@@ -13,7 +13,7 @@ namespace Network_Battle
         internal List<ObjectForDraw> ObjectTicks;
         Thread ThObjectDrawer;
 
-        public ObjectDrawer(Image Bitmap,MainWindow.AddToDrawList ev)
+        public ObjectDrawer(Image Bitmap,EventsClass.AddToDrawList ev)
         {
             ObjectTicks = new List<ObjectForDraw>();
 
@@ -35,7 +35,7 @@ namespace Network_Battle
 
             List<ObjectForDraw> ListObj = (List<ObjectForDraw>)((object[])m)[1];
 
-            MainWindow.AddToDrawList Event = ((MainWindow.AddToDrawList)((object[])m)[2]);
+            EventsClass.AddToDrawList Event = ((EventsClass.AddToDrawList)((object[])m)[2]);
 
             int Pause = 25;
             const int MaxTicks = 4;

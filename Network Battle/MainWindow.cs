@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
 using ObjectClasses;
+using Events;
+
 
 namespace Network_Battle
 {
@@ -28,11 +30,9 @@ namespace Network_Battle
         List<int> AnimationAddr = new List<int>() { 0 };
         List<Person> PersonList = new List<Person>();
 
-        public delegate void PackageSave(object Package, bool IsBullet);
-        public event PackageSave PackgeWasGot;
+        public event EventsClass.PackageSave PackgeWasGot;
 
-        public delegate void AddToDrawList(Person _p, int _AnimL, ref Image[] Ims, Image Bitmap, int _Pointer = 0);
-        public event AddToDrawList EventAddToDrawList;
+        public event EventsClass.AddToDrawList EventAddToDrawList;
 
         Person GetPersonByID(int ID)
         {
@@ -46,7 +46,7 @@ namespace Network_Battle
 
         void AddNetObject(object Package,bool IsBullet)
         {
-            if(IsBullet)
+            if (IsBullet)
             {
                 BulletNetDataPackage Data = (BulletNetDataPackage)Package;
                 Person Per = GetPersonByID(Data.ParentPersonID);
@@ -61,23 +61,33 @@ namespace Network_Battle
                     Y = Data.Y
                 };
 
-                ObjDraw.AddToObjectTicksList(Width,Height,BattleField.Image,b);
-                
+                ObjDraw.AddToObjectTicksList(Width, Height, BattleField.Image, b);
+
             }
             else
             {
                 PersonNetDataPackage Data = (PersonNetDataPackage)Package;
-                Person Per = GetPersonByID(Data.PersonID);
+                Person Per;
+                if (!Data.IsNewPerson)
+                {
+                    Per = GetPersonByID(Data.PersonID);
 
-                if (Per == null)
-                    return;
+                    if (Per == null)
+                        return;
+                }
+                else
+                {
+                    Per = new Person();
+                    Per.ID = Data.PersonID;
+                }
 
                 Per.X = Data.X;
                 Per.Y = Data.Y;
                 Per.XSpeed = Data.XSpeed;
                 Per.YSpeed = Data.YSpeed;
 
-                ObjDraw.AddToObjectTicksList(Per,Data.AnimAddr,Data.AnimLenght,ref Anims,BattleField.Image);
+                ObjDraw.AddToObjectTicksList(Per, Data.AnimAddr, Data.AnimLenght, ref Anims, BattleField.Image);
+
             }
         }
 

@@ -42,8 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileTools.cs" />
     <Compile Include="Redrawing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ToolsClass.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

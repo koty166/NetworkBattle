@@ -4,6 +4,7 @@ using Events;
 using System.Drawing;
 using ObjectClasses;
 
+
 namespace Network_Battle
 {
     sealed internal class PersonDrawTickImage : ObjectForDraw
@@ -47,6 +48,6 @@ namespace Network_Battle
             if (!IsNeedToDraw) _Stadia--;
         }
 
-       public bool IsPersonEquals(Person _p) => _Person == _p;
+       public bool Equals(Person _p) => _Person.ID == _p.ID;
     }
 }

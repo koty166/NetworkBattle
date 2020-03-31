@@ -17,8 +17,15 @@ namespace Network_Battle
             g = null;
         }
         internal ObjectForDraw(Image Bitmap) : this()
-        {   lock (Bitmap)
-                g = Graphics.FromImage(Bitmap);
+        {
+            while(true)
+            try
+            {
+                lock (Bitmap)
+                    g = Graphics.FromImage(Bitmap);
+                    break;
+            }
+            catch { }
         }
 
         virtual internal void Draw(bool i)

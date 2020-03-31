@@ -116,6 +116,10 @@
       <Project>{3408af0a-f5f1-401f-ab74-91a7a25ea33f}</Project>
       <Name>Events</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NetworkLibrary\NetworkLibrary.csproj">
+      <Project>{6aecac2d-8b50-4a9a-bba5-5ddb46153734}</Project>
+      <Name>NetworkLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ObjectClasses\ObjectClasses.csproj">
       <Project>{aec8bf3a-0e32-4f8c-a5ec-4a6ae9bc1e6a}</Project>
       <Name>ObjectClasses</Name>

@@ -13,16 +13,17 @@ namespace Network_Battle
         internal List<ObjectForDraw> ObjectTicks;
         Thread ThObjectDrawer;
 
-        public ObjectDrawer(Image Bitmap,EventsClass.AddToDrawList ev)
+        public ObjectDrawer(Image Bitmap,EventsClass.AddToDrawList EvNeedToAddStaticPicture , SynchronizationContext SynContext)
         {
             ObjectTicks = new List<ObjectForDraw>();
 
             ThObjectDrawer = new Thread(new ParameterizedThreadStart(Draw));
 
-            object[] m = new object[3];
+            object[] m = new object[4];
             m[0] = Bitmap;
             m[1] = ObjectTicks;
-            m[2] = ev;
+            m[2] = EvNeedToAddStaticPicture;
+            m[3] = SynContext;
 
             ThObjectDrawer.Start(m);
         }
@@ -34,15 +35,16 @@ namespace Network_Battle
                 g = Graphics.FromImage((Image)((object[])m)[0]);
 
             List<ObjectForDraw> ListObj = (List<ObjectForDraw>)((object[])m)[1];
-
-            EventsClass.AddToDrawList Event = ((EventsClass.AddToDrawList)((object[])m)[2]);
+            MainWindow MainWin = (MainWindow)Application.OpenForms[0];
+            EventsClass.AddToDrawList EvNeedToAddStaticPicture = ((EventsClass.AddToDrawList)((object[])m)[2]);
+            SynchronizationContext SynContext = ((SynchronizationContext)((object[])m)[3]);
 
             int Pause = 25;
             const int MaxTicks = 4;
             int Ticks = 1;
             bool IsNeedToDraw = true;
 
-            while (!false)
+            while (true)
             {
                 g.Clear(Color.AntiqueWhite);
                 lock (ListObj)
@@ -54,12 +56,14 @@ namespace Network_Battle
                         if (ListObj[i].IsNeedToDestroy)
                         {
                             if (ListObj[i].GetType() == new PersonDrawTickImage().GetType())
-                                ((PersonDrawTickImage)ListObj[i]).InvokeEventForAddToDrawList(Event);
+                                ((PersonDrawTickImage)ListObj[i]).InvokeEventForAddToDrawList(EvNeedToAddStaticPicture);
                             ListObj.RemoveAt(i);
                         } 
                 }
                 Thread.Sleep(Pause);
-                
+
+                SynContext.Send(_ => MainWin.BattleField.Refresh(),null);
+
                 if (Ticks == 1)
                     IsNeedToDraw = false;
                 else if(Ticks == MaxTicks)
@@ -77,7 +81,7 @@ namespace Network_Battle
             {
                 for (int i = 0; i < ObjectTicks.Count; i++)
                 {
-                    if (ObjectTicks[i].GetType() == new PersonDrawTickImage().GetType() && ((PersonDrawTickImage)ObjectTicks[i]).IsPersonEquals(_P))
+                    if (ObjectTicks[i].GetType() == new PersonDrawTickImage().GetType() && ((PersonDrawTickImage)ObjectTicks[i]).Equals(_P))
                     {
                         if (IsNeedToRemove)
                             ObjectTicks.RemoveAt(i);

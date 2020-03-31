@@ -8,6 +8,7 @@ namespace ObjectClasses
 {
    public class Person
     {
-        public int X, Y , XSpeed , YSpeed , ID;
+        public int X, Y, XSpeed, YSpeed;
+        public byte ID;
     }
 }

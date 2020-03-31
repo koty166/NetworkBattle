@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Tools;
 
 namespace NetworkLibrary
 {
-    internal class PackageSender
+    public class PackageSender
     {
         List<IPEndPoint> AddrIPList;
         public PackageSender()
@@ -31,6 +32,7 @@ namespace NetworkLibrary
             {
                 SendPersonDataPackage(Package, i);
             }
+            FileTools.Log("Person sended to all users");
         }
         public void SendBullet(Bullet Bul)
         {
@@ -48,20 +50,10 @@ namespace NetworkLibrary
             }
         }
 
-        void CopyFromArrayToArry(ref byte[] FirstArray, ref byte[] SecoundArray, int PointerA, int PointerB, int Lenght)
-        {
-            int A = PointerA;
-            for (int i = PointerB; i < Lenght + PointerB; i++)
-            {
-                FirstArray[A] = SecoundArray[i];
-                A++;
-            }
-        }
-
         void SendPersonDataPackage(PersonNetDataPackage Package, IPEndPoint EndPoint)
         {
             byte[] MainPackage = new byte[34], buf;
-            UdpClient GetClient = new UdpClient(EndPoint);
+            UdpClient GetClient = new UdpClient();
 
             if (Package.IsNewPerson)
                 MainPackage[4] = 0;
@@ -69,27 +61,28 @@ namespace NetworkLibrary
                 MainPackage[4] = 2;
 
             buf = BitConverter.GetBytes(Package.PersonID);
-            CopyFromArrayToArry(ref MainPackage, ref buf, 5, 0, 4);
+            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 5, 0, 4);
 
             buf = BitConverter.GetBytes(Package.X);
-            CopyFromArrayToArry(ref MainPackage, ref buf, 9, 0, 4);
+            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 9, 0, 4);
 
             buf = BitConverter.GetBytes(Package.Y);
-            CopyFromArrayToArry(ref MainPackage, ref buf, 13, 0, 4);
+            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 13, 0, 4);
 
             buf = BitConverter.GetBytes(Package.XSpeed);
-            CopyFromArrayToArry(ref MainPackage, ref buf, 17, 0, 4);
+            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 17, 0, 4);
 
             buf = BitConverter.GetBytes(Package.YSpeed);
-            CopyFromArrayToArry(ref MainPackage, ref buf, 21, 0, 4);
+            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 21, 0, 4);
 
             buf = BitConverter.GetBytes(Package.AnimAddr);
-            CopyFromArrayToArry(ref MainPackage, ref buf, 25, 0, 4);
+            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 25, 0, 4);
 
             buf = BitConverter.GetBytes(Package.AnimLenght);
-            CopyFromArrayToArry(ref MainPackage, ref buf, 29, 0, 4);
+            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 29, 0, 4);
 
             GetClient.Send(MainPackage, 34, EndPoint);
+            GetClient.Close();
 
         }
 
@@ -101,25 +94,66 @@ namespace NetworkLibrary
             MainPackage[4] = 1;
 
             buf = BitConverter.GetBytes(Package.Curner);
-            CopyFromArrayToArry(ref MainPackage, ref buf, 5, 0, 4);
+            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 5, 0, 4);
             buf = BitConverter.GetBytes(Package.X);
-            CopyFromArrayToArry(ref MainPackage, ref buf, 9, 0, 4);
+            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 9, 0, 4);
             buf = BitConverter.GetBytes(Package.Y);
-            CopyFromArrayToArry(ref MainPackage, ref buf, 13, 0, 4);
+            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 13, 0, 4);
             buf = BitConverter.GetBytes(Package.ParentPersonID);
-            CopyFromArrayToArry(ref MainPackage, ref buf, 17, 0, 4);
+            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 17, 0, 4);
 
             GetClient.Send(MainPackage, 21, EndPoint);
+            GetClient.Close();
         }
 
-        void CheckConnection(IPEndPoint Addr)
+        public void SendingIniPackage()
         {
+            byte[] MainPackage = new byte[5];
+            MainPackage[4] = 3;
 
+            string[] Strings = new string[4];
+            foreach (var i in Dns.GetHostAddresses(Dns.GetHostName()))
+            {
+                if (i.AddressFamily == AddressFamily.InterNetwork)
+                    Strings = i.ToString().Split('.');
+            } 
+            FileTools.Log($"Sended ip:{Strings[0]}.{Strings[1]}.{Strings[2]}.{Strings[3]}");
+            string LocalAddrLast = Strings[3];
+
+            String Addr;
+            UdpClient Client = new UdpClient();
+
+            for (int i = 1; i < 255; i++)
+            {
+                Strings[3] = i.ToString();
+                Addr = Strings[0] + "." + Strings[1] + "." + Strings[2] + "." + Strings[3];
+                MainPackage[0] = byte.Parse(Strings[0]);
+                MainPackage[1] = byte.Parse(Strings[1]);
+                MainPackage[2] = byte.Parse(Strings[2]);
+                MainPackage[3] = byte.Parse(LocalAddrLast);
+
+                Client.Send(MainPackage, MainPackage.Length, new IPEndPoint(IPAddress.Parse(Addr), 7777));
+            }
+            FileTools.Log("Ini package sended");
+            Client.Close();
         }
 
-        public void AddToAddrIPList(IPAddress Addr, int port = 7777) =>
-            AddrIPList.Add(new IPEndPoint(Addr, port));
-        public void AddToAddrIPList(String Addr, int port = 7777) =>
-            AddrIPList.Add(new IPEndPoint(IPAddress.Parse(Addr), port));
+        public void AddToAddrIPList(IPAddress Addr, int port = 7777)
+        {
+            FileTools.Log("Addres added");
+            if (!AddrIPList.Contains(new IPEndPoint(Addr, port)))
+                AddrIPList.Add(new IPEndPoint(Addr, port));
+        }
+           
+        public void AddToAddrIPList(String Addr, int port = 7777)
+        {
+            FileTools.Log("Addres added");
+            if (!AddrIPList.Contains(new IPEndPoint(IPAddress.Parse(Addr), port)))
+                AddrIPList.Add(new IPEndPoint(IPAddress.Parse(Addr), port));
+        }
+
+        public IPEndPoint[] GetAddrList() =>
+             AddrIPList.ToArray();
     }
+            
 }

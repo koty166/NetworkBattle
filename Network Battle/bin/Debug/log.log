@@ -513,3 +513,8 @@
 31.03.2020 10:54:00:387		Person sended to all users
 31.03.2020 10:54:00:804		Person sended to all users
 31.03.2020 10:54:01:130		Person sended to all users
+05.04.2020 20:14:52:667		Connect waiter start
+05.04.2020 20:14:52:670		TCP Connect waiter start
+05.04.2020 20:14:55:113		Connect waiter dispose
+05.04.2020 20:14:55:118		Person list got
+05.04.2020 20:14:55:125		TCP Connect waiter dispose

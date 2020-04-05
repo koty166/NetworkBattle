@@ -102,13 +102,14 @@ namespace NetworkLibrary
             buf = BitConverter.GetBytes(Package.ParentPersonID);
             ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 17, 0, 4);
 
+
             GetClient.Send(MainPackage, 21, EndPoint);
             GetClient.Close();
         }
 
-        public void SendingIniPackage()
+        public void SendingIniPackage(Person LocalPerson)
         {
-            byte[] MainPackage = new byte[5];
+            byte[] MainPackage = new byte[5] , buf;
             MainPackage[4] = 3;
 
             string[] Strings = new string[4];
@@ -131,6 +132,19 @@ namespace NetworkLibrary
                 MainPackage[1] = byte.Parse(Strings[1]);
                 MainPackage[2] = byte.Parse(Strings[2]);
                 MainPackage[3] = byte.Parse(LocalAddrLast);
+
+                MainPackage[4] = LocalPerson.ID;
+                buf = BitConverter.GetBytes(LocalPerson.X);
+                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 5, 0, 4);
+
+                buf = BitConverter.GetBytes(LocalPerson.Y);
+                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 9, 0, 4);
+
+                buf = BitConverter.GetBytes(LocalPerson.XSpeed);
+                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 13, 0, 4);
+
+                buf = BitConverter.GetBytes(LocalPerson.YSpeed);
+                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 17, 0, 4);
 
                 Client.Send(MainPackage, MainPackage.Length, new IPEndPoint(IPAddress.Parse(Addr), 7777));
             }

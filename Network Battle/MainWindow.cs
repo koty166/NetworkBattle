@@ -275,7 +275,7 @@ namespace Network_Battle
                 Y = Size.Height / 2,
             };
             int Lenght = Dns.GetHostAddresses(Dns.GetHostName()).Length;
-            LocalPerson.ID = byte.Parse(Dns.GetHostAddresses(Dns.GetHostName())[0].MapToIPv4().ToString().Split('.')[3]);
+            LocalPerson.ID = byte.Parse(Dns.GetHostAddresses(Dns.GetHostName())[1].MapToIPv4().ToString().Split('.')[3]);
             LocalPersonID = LocalPerson.ID;
 
             LocalEnemy = new Person()
@@ -321,7 +321,6 @@ namespace Network_Battle
         private void timer1_Tick(object sender, EventArgs e)
         {
             BattleField.Refresh();
-            // BattleField.Invalidate /////////////may be this?
         }
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -334,7 +333,7 @@ namespace Network_Battle
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            OutNetConnect.SendingIniPackage();
+            OutNetConnect.SendingIniPackage(PersonList[0]);
         }
 
         private void СписокАдресовToolStripMenuItem_Click(object sender, EventArgs e)

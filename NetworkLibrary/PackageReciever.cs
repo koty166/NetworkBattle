@@ -73,7 +73,7 @@ namespace NetworkLibrary
 
                 MainPackage[4] = 0;
 
-                buf = BitConverter.GetBytes(i.ID);
+                buf = BitConverter.GetBytes((int)i.ID);
                 ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 5, 0, 4);
 
                 buf = BitConverter.GetBytes(i.X);
@@ -148,10 +148,19 @@ namespace NetworkLibrary
                     PersonData.Y = Buffer[1];
                     PersonData.XSpeed = Buffer[2];
                     PersonData.YSpeed = Buffer[3];
+
+                    ls.Add(new Person()
+                    {
+                        ID = Buffer[4],
+                        X = BitConverter.ToInt32(Buffer, 5),
+                        Y = BitConverter.ToInt32(Buffer, 9),
+                        XSpeed = BitConverter.ToInt32(Buffer, 13),
+                        YSpeed = BitConverter.ToInt32(Buffer, 17)
+                    });
                 }
                 else
                 {
-                    PersonData.PersonID = -2;
+                    PersonData.PersonID = -2;//this package isn`t avalible addres == local addrers
                 }
                 
                 return false;

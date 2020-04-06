@@ -89,7 +89,7 @@ namespace NetworkLibrary
         void SendBulletDataPackage(BulletNetDataPackage Package, IPEndPoint EndPoint)
         {
             byte[] MainPackage = new byte[21], buf;
-            UdpClient GetClient = new UdpClient(EndPoint);
+            UdpClient GetClient = new UdpClient();
 
             MainPackage[4] = 1;
 
@@ -109,7 +109,7 @@ namespace NetworkLibrary
 
         public void SendingIniPackage(Person LocalPerson)
         {
-            byte[] MainPackage = new byte[5] , buf;
+            byte[] MainPackage = new byte[22] , buf;
             MainPackage[4] = 3;
 
             string[] Strings = new string[4];
@@ -133,18 +133,19 @@ namespace NetworkLibrary
                 MainPackage[2] = byte.Parse(Strings[2]);
                 MainPackage[3] = byte.Parse(LocalAddrLast);
 
-                MainPackage[4] = LocalPerson.ID;
+                MainPackage[4] = 3;
+                MainPackage[5] = LocalPerson.ID;
                 buf = BitConverter.GetBytes(LocalPerson.X);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 5, 0, 4);
+                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 6, 0, 4);
 
                 buf = BitConverter.GetBytes(LocalPerson.Y);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 9, 0, 4);
+                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 10, 0, 4);
 
                 buf = BitConverter.GetBytes(LocalPerson.XSpeed);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 13, 0, 4);
+                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 14, 0, 4);
 
                 buf = BitConverter.GetBytes(LocalPerson.YSpeed);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 17, 0, 4);
+                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 18, 0, 4);
 
                 Client.Send(MainPackage, MainPackage.Length, new IPEndPoint(IPAddress.Parse(Addr), 7777));
             }

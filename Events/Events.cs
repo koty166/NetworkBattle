@@ -16,5 +16,7 @@ namespace Events
         public delegate void AddToDrawList(Person _p, int _AnimL, ref Image[] Ims, Image Bitmap, int _Pointer = 0);
 
         public delegate void AddToAddrList(IPAddress Ip , int port);
+
+        public delegate void AddPersonToPList(Person p);
     }
 }

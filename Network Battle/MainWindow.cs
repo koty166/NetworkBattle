@@ -37,7 +37,6 @@ namespace Network_Battle
         public event EventsClass.PackageSave PackgeWasGot;
         public event EventsClass.AddToDrawList EventAddToDrawList;
         public event EventsClass.AddToAddrList AddToNetAddrList;
-        public event EventsClass.AddPersonToPList AddPersonToPList;
 
         Person GetPersonByID(int ID)
         {
@@ -299,7 +298,6 @@ namespace Network_Battle
             ////////////////////////////////
             EventAddToDrawList += AddToDrList;
             PackgeWasGot += AddNetObject;
-            AddPersonToPList += PersonList.Add;
 
             ObjDraw = new ObjectDrawer(BattleField.Image, EventAddToDrawList, SynchronizationContext.Current);
             IC = new IntersectController(ObjDraw);

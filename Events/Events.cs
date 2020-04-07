@@ -17,6 +17,5 @@ namespace Events
 
         public delegate void AddToAddrList(IPAddress Ip , int port);
 
-        public delegate void AddPersonToPList(Person p);
     }
 }

@@ -158,7 +158,7 @@ namespace Network_Battle
         void ShowShoot(int X, int Y, Person p)
         {
             double LCurner = 0;
-            double OX, OY;
+            double OX = p.X + 48, OY = p.Y + 48;
            /* lock(p)
             {
                 p.X += 48;
@@ -168,65 +168,62 @@ namespace Network_Battle
             p.XSpeed = 0;
             ObjDraw.IsPersonInList(p, true);
             Stopwatch w = Stopwatch.StartNew();
-            if (X > p.X && Y < p.Y)
+            if (X > OX && Y < OY)
             {
-                LCurner = Math.Atan2((X - p.X), (p.Y - Y)) * 180 / Math.PI;
+                LCurner = Math.Atan2((X - OX), (OY - Y)) * 180 / Math.PI;
 
                 ObjDraw.AddToObjectTicksList(p, AnimationAddr[7], 10, ref Anims, BattleField.Image);//n-e
                 OutNetConnect.SendPerson(p, AnimationAddr[7], 10, true);
             }
-            else if (X > p.X && Y > p.Y)
+            else if (X > OX && Y > OY)
             {
-                LCurner = 180 - Math.Atan2((X - p.X), (Y - p.Y)) * 180 / Math.PI;
+                LCurner = 180 - Math.Atan2((X - OX), (Y - OY)) * 180 / Math.PI;
 
                 ObjDraw.AddToObjectTicksList(p, AnimationAddr[1], 10, ref Anims, BattleField.Image);//s-e
                 OutNetConnect.SendPerson(p, AnimationAddr[1], 10, true);
             }
-            else if (X < p.X && Y > p.Y)
+            else if (X < OX && Y > OY)
             {
-                LCurner = Math.Atan2((p.X - X), (Y - p.Y)) * 180 / Math.PI + 180;
+                LCurner = Math.Atan2((OX - X), (Y - OY)) * 180 / Math.PI + 180;
 
                 ObjDraw.AddToObjectTicksList(p, AnimationAddr[3], 10, ref Anims, BattleField.Image);//s-w
                 OutNetConnect.SendPerson(p, AnimationAddr[3], 10, true);
             }
-            else if (X < p.X && Y < p.Y)
+            else if (X < OX && Y < OY)
             {
-                LCurner = 360 - Math.Atan2((p.X - X), (p.Y - Y)) * 180 / Math.PI;
+                LCurner = 360 - Math.Atan2((OX - X), (OY - Y)) * 180 / Math.PI;
 
                 ObjDraw.AddToObjectTicksList(p, AnimationAddr[5], 10, ref Anims, BattleField.Image);//n-w
                 OutNetConnect.SendPerson(p, AnimationAddr[5], 10, true);
             }
-            else if (X < p.X && Y == p.Y)
+            else if (X < OX && Y == OY)
             {
                 LCurner = 270;
 
                 ObjDraw.AddToObjectTicksList(p, AnimationAddr[4], 10, ref Anims, BattleField.Image);//w
                 OutNetConnect.SendPerson(p, AnimationAddr[4], 10, true);
             }
-            else if (X > p.X && Y == p.Y)
+            else if (X > OX && Y == OY)
             {
                 LCurner = 90;
 
                 ObjDraw.AddToObjectTicksList(p, AnimationAddr[0], 10, ref Anims, BattleField.Image);//e
                 OutNetConnect.SendPerson(p, AnimationAddr[0], 10, true);
             }
-            else if (X == p.X && Y > p.Y)
+            else if (X == OX && Y > OY)
             {
                 LCurner = 180;
 
                 ObjDraw.AddToObjectTicksList(p, AnimationAddr[2], 10, ref Anims, BattleField.Image);//s
                 OutNetConnect.SendPerson(p, AnimationAddr[2], 10, true);
             }
-            else if (X == p.X && Y < p.Y)
+            else if (X == OX && Y < OY)
             {
                 LCurner = 0;
 
                 ObjDraw.AddToObjectTicksList(p, AnimationAddr[6], 10, ref Anims, BattleField.Image);//n
                 OutNetConnect.SendPerson(p, AnimationAddr[6], 10, true);
             }
-
-            OX = p.X;
-            OY = p.Y;
 
            /* lock (p)
             {

@@ -51,7 +51,7 @@ namespace NetworkLibrary
             if (!Sender.Connected)
                 return;
 
-            Sender.GetStream().Write(BitConverter.GetBytes(ls.Count),0,4);
+            Sender.GetStream().Write(BitConverter.GetBytes(ls.Count - 1),0,4);
 
             byte[] MainPackage = new byte[34], buf;
 
@@ -64,7 +64,7 @@ namespace NetworkLibrary
 
             FileTools.Log($"Sended ip:{Strings[0]}.{Strings[1]}.{Strings[2]}.{Strings[3]}");
 
-            foreach (var i in ls)
+            for (int i = 0; i < ls.Count - 1; i++)
             {
                 MainPackage[0] = byte.Parse(Strings[0]);
                 MainPackage[1] = byte.Parse(Strings[1]);
@@ -73,19 +73,19 @@ namespace NetworkLibrary
 
                 MainPackage[4] = 0;
 
-                buf = BitConverter.GetBytes((int)i.ID);
+                buf = BitConverter.GetBytes((int)ls[i].ID);
                 ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 5, 0, 4);
 
-                buf = BitConverter.GetBytes(i.X);
+                buf = BitConverter.GetBytes(ls[i].X);
                 ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 9, 0, 4);
 
-                buf = BitConverter.GetBytes(i.Y);
+                buf = BitConverter.GetBytes(ls[i].Y);
                 ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 13, 0, 4);
 
-                buf = BitConverter.GetBytes(i.XSpeed);
+                buf = BitConverter.GetBytes(ls[i].XSpeed);
                 ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 17, 0, 4);
 
-                buf = BitConverter.GetBytes(i.YSpeed);
+                buf = BitConverter.GetBytes(ls[i].YSpeed);
                 ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 21, 0, 4);
 
                 buf = BitConverter.GetBytes(8);

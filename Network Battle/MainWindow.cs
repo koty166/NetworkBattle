@@ -47,7 +47,17 @@ namespace Network_Battle
             }
             return null;
         }
+        bool IsPerInColl(byte ID)
+        {
+            foreach (var i in PersonList)
+            {
+                if (i.ID == ID)
+                    return true;
 
+            }
+            return false;
+
+        }
         void AddNetObject(object Package,bool IsBullet)
         {
             if (IsBullet)
@@ -93,6 +103,9 @@ namespace Network_Battle
                 {
                     Per = new Person();
                     Per.ID = (byte)Data.PersonID;
+                    if (!IsPerInColl(Per.ID))
+                        PersonList.Add(Per);
+                   
                 }
 
                 Per.X = Data.X;
@@ -146,14 +159,15 @@ namespace Network_Battle
         {
             double LCurner = 0;
             double OX, OY;
-            lock(p)
+           /* lock(p)
             {
                 p.X += 48;
                 p.Y += 48;
-            }
+            }*/
             p.YSpeed = 0;
             p.XSpeed = 0;
             ObjDraw.IsPersonInList(p, true);
+            Stopwatch w = Stopwatch.StartNew();
             if (X > p.X && Y < p.Y)
             {
                 LCurner = Math.Atan2((X - p.X), (p.Y - Y)) * 180 / Math.PI;
@@ -214,14 +228,16 @@ namespace Network_Battle
             OX = p.X;
             OY = p.Y;
 
-            lock (p)
+           /* lock (p)
             {
                 p.X -= 48;
                 p.Y -= 48;
-            }
+            }*/
 
             GetPointToDrawBullet(ref OX, ref OY, LCurner);
 
+            Console.WriteLine(w.ElapsedMilliseconds + ":" + w.ElapsedTicks);
+            Thread.Sleep(5);
             OutNetConnect.SendBullet(new Bullet()
             {
                 X = OX,
@@ -328,11 +344,6 @@ namespace Network_Battle
             /////////////////
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            BattleField.Refresh();
-        }
-
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             ObjDraw.Dispose();
@@ -358,7 +369,7 @@ namespace Network_Battle
 
         private void показатьСписокПерсонажейToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show(PersonList.Count.ToString());
         }
 
         private void локальныйАдрессToolStripMenuItem_Click(object sender, EventArgs e)

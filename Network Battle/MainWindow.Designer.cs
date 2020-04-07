@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.BattleField = new System.Windows.Forms.PictureBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -37,7 +36,6 @@
             this.показатьСписокАдресовToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.показатьСписокПерсонажейToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.локальныйАдрессToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.BattleField)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -109,12 +107,6 @@
             this.локальныйАдрессToolStripMenuItem.Text = "Локальный адрес";
             this.локальныйАдрессToolStripMenuItem.Click += new System.EventHandler(this.локальныйАдрессToolStripMenuItem_Click);
             // 
-            // timer1
-            // 
-            this.timer1.Enabled = true;
-            this.timer1.Interval = 16;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -145,7 +137,6 @@
         internal System.Windows.Forms.PictureBox BattleField;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
-        private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ToolStripSplitButton toolStripButton2;
         private System.Windows.Forms.ToolStripMenuItem показатьСписокАдресовToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem показатьСписокПерсонажейToolStripMenuItem;

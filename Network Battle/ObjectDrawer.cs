@@ -84,7 +84,10 @@ namespace Network_Battle
                     if (ObjectTicks[i].GetType() == new PersonDrawTickImage().GetType() && ((PersonDrawTickImage)ObjectTicks[i]).Equals(_P))
                     {
                         if (IsNeedToRemove)
+                        {
+                            _P.DeadNum++;
                             ObjectTicks.RemoveAt(i);
+                        }
                         return true;
 
                     }

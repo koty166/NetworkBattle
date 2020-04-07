@@ -10,5 +10,6 @@ namespace ObjectClasses
     {
         public int X, Y, XSpeed, YSpeed;
         public byte ID;
+        public int DeadNum = 0;
     }
 }

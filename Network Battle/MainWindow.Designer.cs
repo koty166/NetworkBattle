@@ -36,6 +36,7 @@
             this.показатьСписокАдресовToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.показатьСписокПерсонажейToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.локальныйАдрессToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.списокСмертейToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.BattleField)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -79,7 +80,8 @@
             this.toolStripButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.показатьСписокАдресовToolStripMenuItem,
             this.показатьСписокПерсонажейToolStripMenuItem,
-            this.локальныйАдрессToolStripMenuItem});
+            this.локальныйАдрессToolStripMenuItem,
+            this.списокСмертейToolStripMenuItem});
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
@@ -106,6 +108,13 @@
             this.локальныйАдрессToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.локальныйАдрессToolStripMenuItem.Text = "Локальный адрес";
             this.локальныйАдрессToolStripMenuItem.Click += new System.EventHandler(this.локальныйАдрессToolStripMenuItem_Click);
+            // 
+            // списокСмертейToolStripMenuItem
+            // 
+            this.списокСмертейToolStripMenuItem.Name = "списокСмертейToolStripMenuItem";
+            this.списокСмертейToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.списокСмертейToolStripMenuItem.Text = "Список смертей";
+            this.списокСмертейToolStripMenuItem.Click += new System.EventHandler(this.списокСмертейToolStripMenuItem_Click);
             // 
             // MainWindow
             // 
@@ -141,6 +150,7 @@
         private System.Windows.Forms.ToolStripMenuItem показатьСписокАдресовToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem показатьСписокПерсонажейToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem локальныйАдрессToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem списокСмертейToolStripMenuItem;
     }
 }
 

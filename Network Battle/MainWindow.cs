@@ -379,6 +379,16 @@ namespace Network_Battle
             MessageBox.Show(s);
         }
 
+        private void списокСмертейToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string s = "";
+            foreach (var i in PersonList)
+            {
+                s += i.ID + ":" + i.DeadNum;
+            }
+            MessageBox.Show(s);
+        }
+
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
             int Speed = 5;

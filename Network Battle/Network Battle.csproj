@@ -124,6 +124,10 @@
       <Project>{aec8bf3a-0e32-4f8c-a5ec-4a6ae9bc1e6a}</Project>
       <Name>ObjectClasses</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tools\Tools.csproj">
+      <Project>{cf19b012-ea25-4f93-9770-a11960123a81}</Project>
+      <Name>Tools</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

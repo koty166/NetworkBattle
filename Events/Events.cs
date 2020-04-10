@@ -11,7 +11,7 @@ namespace Events
 {
     public class EventsClass
     {
-        public delegate void PackageSave(object Package, bool IsBullet);
+        public delegate void PackageSave(object Package);
 
         public delegate void AddToDrawList(Person _p, int _AnimL, ref Image[] Ims, Image Bitmap, int _Pointer = 0);
 

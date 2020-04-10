@@ -8,8 +8,8 @@ namespace ObjectClasses
 {
    public class Bullet
     {
-        public int Curner;
-        const int Size = 5, Speed = 3;
+        public double Curner;
+        const int Size = 5, Speed = 5;
         public double X, Y;
         public Person ParentPerson;
 
@@ -22,52 +22,8 @@ namespace ObjectClasses
 
         void CountCoordinats(out double NextX, out double NextY)
         {
-            double GetRadian(int Curner) => Curner * Math.PI / 180;
-            if (Curner < 90)
-            {
-                NextX = X + Math.Sin(GetRadian(Curner)) * Speed;
-                NextY = Y - Math.Cos(GetRadian(Curner)) * Speed;
-            }
-            else if (Curner > 90 && Curner < 180)
-            {
-                NextX = X + Math.Cos(GetRadian(Curner - 90)) * Speed;
-                NextY = Y + Math.Sin(GetRadian(Curner - 90)) * Speed;
-            }
-            else if (Curner > 180 && Curner < 270)
-            {
-                NextX = X - Math.Sin(GetRadian(Curner - 180)) * Speed;
-                NextY = Y + Math.Cos(GetRadian(Curner - 180)) * Speed;
-            }
-            else if (Curner > 270)
-            {
-                NextX = X - Math.Cos(GetRadian(Curner - 270)) * Speed;
-                NextY = Y - Math.Sin(GetRadian(Curner - 270)) * Speed;
-            }
-            else if (Curner == 0)
-            {
-                NextX = X;
-                NextY = Y - Speed;
-            }
-            else if (Curner == 90)
-            {
-                NextX = X + Speed;
-                NextY = Y;
-            }
-            else if (Curner == 180)
-            {
-                NextX = X;
-                NextY = Y + Speed;
-            }
-            else if (Curner == 270)
-            {
-                NextX = X - Speed;
-                NextY = Y;
-            }
-            else
-            {
-                NextX = 0;
-                NextY = 0;
-            }
+             NextX = (int)(Math.Cos(2 * Math.PI - Curner) * Speed) + X;
+             NextY = (int)(Math.Sin(2 * Math.PI - Curner) * Speed) + Y;
         }
 
         public bool Tick(Rectangle Border)

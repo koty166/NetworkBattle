@@ -12,6 +12,7 @@ using System.IO;
 using ObjectClasses;
 using Events;
 using NetworkLibrary;
+using Tools;
 
 
 namespace Network_Battle
@@ -24,7 +25,7 @@ namespace Network_Battle
         }
 
         Image[] Anims;
-        Person LocalPerson , LocalEnemy;///
+        Person LocalPerson, LocalEnemy;///
         ObjectDrawer ObjDraw;
         IntersectController IC;
         PackageReciever InNetConnect;
@@ -47,6 +48,7 @@ namespace Network_Battle
             }
             return null;
         }
+
         bool IsPerInColl(byte ID)
         {
             foreach (var i in PersonList)
@@ -58,203 +60,66 @@ namespace Network_Battle
             return false;
 
         }
-        void AddNetObject(object Package,bool IsBullet)
+
+        void AddNetObject(object Package)
         {
-            if (IsBullet)
+            PersonNetDataPackage Data = (PersonNetDataPackage)Package;
+            Person Per;
+            if (Data.PersonID == -2)
+                return;
+
+            else if (Data.PersonID == -1)
             {
-                BulletNetDataPackage Data = (BulletNetDataPackage)Package;
-                Person Per = GetPersonByID(Data.ParentPersonID);
+                string RemoveAddr = Data.X.ToString() + "." + Data.Y.ToString() + "." + Data.XSpeed.ToString() + "." + Data.YSpeed.ToString();
+                OutNetConnect.AddToAddrIPList(RemoveAddr);
+                return;
+            }
+
+            if (!Data.IsNewPerson)
+            {
+                Per = GetPersonByID(Data.PersonID);
 
                 if (Per == null)
                     return;
-
-                Bullet b = new Bullet(Per)
-                {
-                    Curner = Data.Curner,
-                    X = Data.X,
-                    Y = Data.Y
-                };
-
-                ObjDraw.AddToObjectTicksList(Width, Height, BattleField.Image, b);
-
             }
             else
             {
-                PersonNetDataPackage Data = (PersonNetDataPackage)Package;
-                Person Per;
-                 if (Data.PersonID == -2)
-                    return;
-
-                else if (Data.PersonID == -1)
-                {
-                    string RemoveAddr = Data.X.ToString() + "." + Data.Y.ToString() + "." + Data.XSpeed.ToString() + "." + Data.YSpeed.ToString();
-                    OutNetConnect.AddToAddrIPList(RemoveAddr);
-                    return;
-                }
-                
-                if (!Data.IsNewPerson)
-                {
-                    Per = GetPersonByID(Data.PersonID);
-
-                    if (Per == null)
-                        return;
-                }
-                else
-                {
-                    Per = new Person();
-                    Per.ID = (byte)Data.PersonID;
-                    if (!IsPerInColl(Per.ID))
-                        PersonList.Add(Per);
-                   
-                }
-
-                Per.X = Data.X;
-                Per.Y = Data.Y;
-                Per.XSpeed = Data.XSpeed;
-                Per.YSpeed = Data.YSpeed;
-
-                ObjDraw.IsPersonInList(Per,true);
-                ObjDraw.AddToObjectTicksList(Per, Data.AnimAddr, Data.AnimLenght, ref Anims, BattleField.Image);
+                Per = new Person();
+                Per.ID = (byte)Data.PersonID;
+                if (!IsPerInColl(Per.ID))
+                    PersonList.Add(Per);
 
             }
+
+            Per.X = Data.X;
+            Per.Y = Data.Y;
+            Per.XSpeed = Data.XSpeed;
+            Per.YSpeed = Data.YSpeed;
+
+            if (Data.BulletCurner != -1)
+                AddBullet(Data.BulletCurner, Per.X, Per.Y, Per);
+            ObjDraw.IsPersonInList(Per, true);
+            ObjDraw.AddToObjectTicksList(Per, Data.AnimAddr, Data.AnimLenght, ref Anims, BattleField.Image);
+
         }
 
-        void GetPointToDrawBullet(ref double X, ref double Y , double Curner)
+        void AddBullet(double Curner, int X, int Y, Person Parent) => ObjDraw.AddToObjectTicksList(Width, Height, BattleField.Image, new Bullet(LocalPerson)
         {
-            const int Speed = 30;
-            double GetRadian(double InCurner) => InCurner * Math.PI / 180;
-
-            if (Curner < 90)
-            {
-                X += Math.Sin(GetRadian(Curner)) * Speed;
-                Y -= Math.Cos(GetRadian(Curner)) * Speed;
-            }
-            else if (Curner > 90 && Curner < 180)
-            {
-                X += Math.Cos(GetRadian(Curner - 90)) * Speed;
-                Y += Math.Sin(GetRadian(Curner - 90)) * Speed;
-            }
-            else if (Curner > 180 && Curner < 270)
-            {
-                X -= Math.Sin(GetRadian(Curner - 180)) * Speed;
-                Y += Math.Cos(GetRadian(Curner - 180)) * Speed;
-            }
-            else if (Curner > 270)
-            {
-                X -= Math.Cos(GetRadian(Curner - 270)) * Speed;
-                Y -= Math.Sin(GetRadian(Curner - 270)) * Speed;
-            }
-            else if (Curner == 0)
-                Y -= 48;
-            else if (Curner == 90)
-                X += 48;
-            else if (Curner == 180)
-                Y += 48;
-            else if (Curner == 270)
-                X -= 48;
-
-        }
+            X = X,
+            Y = Y,
+            Curner = Curner,
+            ParentPerson = Parent
+        });
 
         void ShowShoot(int X, int Y, Person p)
         {
-            double LCurner = 0;
-            double OX = p.X + 48, OY = p.Y + 48;
-           /* lock(p)
-            {
-                p.X += 48;
-                p.Y += 48;
-            }*/
-            p.YSpeed = 0;
-            p.XSpeed = 0;
             ObjDraw.IsPersonInList(p, true);
-            Stopwatch w = Stopwatch.StartNew();
-            if (X > OX && Y < OY)
-            {
-                LCurner = Math.Atan2((X - OX), (OY - Y)) * 180 / Math.PI;
+            int AnimAddr, BulX = p.X + 48, BulY = p.Y + 48;
+            double Curner = ToolsClass.CountCurner(X, Y, p.X, p.Y, out AnimAddr);
 
-                ObjDraw.AddToObjectTicksList(p, AnimationAddr[7], 10, ref Anims, BattleField.Image);//n-e
-                OutNetConnect.SendPerson(p, AnimationAddr[7], 10, true);
-            }
-            else if (X > OX && Y > OY)
-            {
-                LCurner = 180 - Math.Atan2((X - OX), (Y - OY)) * 180 / Math.PI;
-
-                ObjDraw.AddToObjectTicksList(p, AnimationAddr[1], 10, ref Anims, BattleField.Image);//s-e
-                OutNetConnect.SendPerson(p, AnimationAddr[1], 10, true);
-            }
-            else if (X < OX && Y > OY)
-            {
-                LCurner = Math.Atan2((OX - X), (Y - OY)) * 180 / Math.PI + 180;
-
-                ObjDraw.AddToObjectTicksList(p, AnimationAddr[3], 10, ref Anims, BattleField.Image);//s-w
-                OutNetConnect.SendPerson(p, AnimationAddr[3], 10, true);
-            }
-            else if (X < OX && Y < OY)
-            {
-                LCurner = 360 - Math.Atan2((OX - X), (OY - Y)) * 180 / Math.PI;
-
-                ObjDraw.AddToObjectTicksList(p, AnimationAddr[5], 10, ref Anims, BattleField.Image);//n-w
-                OutNetConnect.SendPerson(p, AnimationAddr[5], 10, true);
-            }
-            else if (X < OX && Y == OY)
-            {
-                LCurner = 270;
-
-                ObjDraw.AddToObjectTicksList(p, AnimationAddr[4], 10, ref Anims, BattleField.Image);//w
-                OutNetConnect.SendPerson(p, AnimationAddr[4], 10, true);
-            }
-            else if (X > OX && Y == OY)
-            {
-                LCurner = 90;
-
-                ObjDraw.AddToObjectTicksList(p, AnimationAddr[0], 10, ref Anims, BattleField.Image);//e
-                OutNetConnect.SendPerson(p, AnimationAddr[0], 10, true);
-            }
-            else if (X == OX && Y > OY)
-            {
-                LCurner = 180;
-
-                ObjDraw.AddToObjectTicksList(p, AnimationAddr[2], 10, ref Anims, BattleField.Image);//s
-                OutNetConnect.SendPerson(p, AnimationAddr[2], 10, true);
-            }
-            else if (X == OX && Y < OY)
-            {
-                LCurner = 0;
-
-                ObjDraw.AddToObjectTicksList(p, AnimationAddr[6], 10, ref Anims, BattleField.Image);//n
-                OutNetConnect.SendPerson(p, AnimationAddr[6], 10, true);
-            }
-
-           /* lock (p)
-            {
-                p.X -= 48;
-                p.Y -= 48;
-            }*/
-
-            GetPointToDrawBullet(ref OX, ref OY, LCurner);
-
-            Console.WriteLine(w.ElapsedMilliseconds + ":" + w.ElapsedTicks);
-            Thread.Sleep(5);
-            OutNetConnect.SendBullet(new Bullet()
-            {
-                X = OX,
-                Y = OY,
-                Curner = (int)LCurner,
-                ParentPerson = GetPersonByID(LocalPersonID)
-            });
-
-
-            ObjDraw.AddToObjectTicksList(Width, Height, BattleField.Image, new Bullet(LocalPerson)
-            {
-                X = OX,
-                Y = OY,
-                Curner = (int)LCurner
-            });
-           
-            
-
-            ////////////////// Надо убрать преобразование в радианы и обратно
-            //ибо смысла в них нет
+            ObjDraw.AddToObjectTicksList(p, AnimationAddr[7], 10, ref Anims, BattleField.Image);
+            OutNetConnect.SendPerson(p, AnimationAddr[7], 10, false,(int)(Curner * 180 / Math.PI));
+            AddBullet(Curner,BulX,BulY,p);
         }
 
         void AddToDrList(Person _p, int _AnimL, ref Image[] Ims, Image Bitmap, int _Pointer)
@@ -384,7 +249,7 @@ namespace Network_Battle
             string s = "";
             foreach (var i in PersonList)
             {
-                s += i.ID + ":" + i.DeadNum;
+                s += i.ID + ":" + i.DeadNum + "\n";
             }
             MessageBox.Show(s);
         }
@@ -399,36 +264,25 @@ namespace Network_Battle
                     LocalPerson.YSpeed = -Speed;
                     LocalPerson.XSpeed = 0;
                     ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[8], 6, ref Anims, BattleField.Image);
-                    OutNetConnect.SendPerson(LocalPerson,AnimationAddr[8], 6,true);
+                    OutNetConnect.SendPerson(LocalPerson,AnimationAddr[8], 6,false,-1);
                     break;
                 case Keys.A:
                     LocalPerson.XSpeed = -Speed;
                     LocalPerson.YSpeed = 0;
                     ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[9], 6, ref Anims, BattleField.Image);
-                    OutNetConnect.SendPerson(LocalPerson, AnimationAddr[9], 6, true);
+                    OutNetConnect.SendPerson(LocalPerson, AnimationAddr[9], 6, false,-1);
                     break;
                 case Keys.S:
                     LocalPerson.YSpeed = Speed;
                     LocalPerson.XSpeed = 0;
                     ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[10], 6, ref Anims, BattleField.Image);
-                    OutNetConnect.SendPerson(LocalPerson, AnimationAddr[10], 6, true);
+                    OutNetConnect.SendPerson(LocalPerson, AnimationAddr[10], 6, false,-1);
                     break;
                 case Keys.D:
                     LocalPerson.XSpeed = Speed;
                     LocalPerson.YSpeed = 0;
                     ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[11], 6, ref Anims, BattleField.Image);
-                    OutNetConnect.SendPerson(LocalPerson, AnimationAddr[11], 6, true);
-                    break;
-                case Keys.P:
-                    Person P = new Person()
-                    {
-                        ID = 0,
-                        X = 45,
-                        Y = 45,
-                        XSpeed = 0,
-                        YSpeed = 0
-                    };
-                    OutNetConnect.SendPerson(P, 0, 6, true);
+                    OutNetConnect.SendPerson(LocalPerson, AnimationAddr[11], 6, false,-1);
                     break;
             }
           

@@ -8,7 +8,7 @@ namespace ObjectClasses
 {
     public class PersonNetDataPackage
     {
-        public int AnimAddr, AnimLenght, XSpeed, YSpeed, PersonID;
+        public int AnimAddr, AnimLenght, XSpeed, YSpeed, PersonID, BulletCurner;
         public int X, Y;
         public bool IsNewPerson;
     }

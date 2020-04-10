@@ -53,7 +53,7 @@ namespace NetworkLibrary
 
             Sender.GetStream().Write(BitConverter.GetBytes(ls.Count - 1),0,4);
 
-            byte[] MainPackage = new byte[34], buf;
+            byte[] MainPackage = new byte[37], buf;
 
             string[] Strings = new string[4];
             foreach (var i in Dns.GetHostAddresses(Dns.GetHostName()))
@@ -94,6 +94,9 @@ namespace NetworkLibrary
                 buf = BitConverter.GetBytes(8);
                 ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 29, 0, 4);
 
+                buf = BitConverter.GetBytes(-1);
+                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 33, 0, 4);
+
                 Sender.GetStream().Write(MainPackage,0,MainPackage.Length);
             }
             FileTools.Log("Person list sended");
@@ -106,35 +109,21 @@ namespace NetworkLibrary
             List<Person> ls = (List<Person>)((object[])ob)[1];
             while (true)
             {
-                BulletNetDataPackage BulletData = new BulletNetDataPackage();
                 PersonNetDataPackage PersonData = new PersonNetDataPackage();
-                bool IsBullet = PackageReciever.GetPackage(BulletData, PersonData,ls);
-                FileTools.Log(IsBullet ? "Bullet package got" : "Person package got");
+                PackageReciever.GetPackage(PersonData,ls);
+                FileTools.Log("Package got");
 
-                if (IsBullet)
-                    Event?.Invoke(BulletData, true);
-                else
-                    Event?.Invoke(PersonData, false);
+                Event?.Invoke(PersonData);
             }
         }
-        
-        static bool ReadFromBuffer(BulletNetDataPackage BulletData, PersonNetDataPackage PersonData , byte[] Buffer, List<Person> ls)
+
+        static void ReadFromBuffer(PersonNetDataPackage PersonData, byte[] Buffer, List<Person> ls)
         {
-
-            if (Buffer[4] == 1)
-            {
-                BulletData.Curner = BitConverter.ToInt32(Buffer, 5);
-                BulletData.X = BitConverter.ToInt32(Buffer, 9);
-                BulletData.Y = BitConverter.ToInt32(Buffer, 13);
-                BulletData.ParentPersonID = BitConverter.ToInt32(Buffer, 17);
-
-                return true;
-            }
-            else if (Buffer[4] == 3)
+            if (Buffer[4] == 3)
             {
                 Thread SendPersons = new Thread(new ParameterizedThreadStart(SendPersonList));
                 string RemoveAddr = Buffer[0].ToString() + "." + Buffer[1].ToString() + "." + Buffer[2].ToString() + "." + Buffer[3].ToString();
-                
+
                 object[] ob = new object[2];
                 ob[0] = RemoveAddr;
                 ob[1] = ls;
@@ -162,8 +151,6 @@ namespace NetworkLibrary
                 {
                     PersonData.PersonID = -2;//this package isn`t avalible addres == local addrers
                 }
-                
-                return false;
             }
             else
             {
@@ -174,22 +161,24 @@ namespace NetworkLibrary
                 PersonData.YSpeed = BitConverter.ToInt32(Buffer, 21);
                 PersonData.AnimAddr = BitConverter.ToInt32(Buffer, 25);
                 PersonData.AnimLenght = BitConverter.ToInt32(Buffer, 29);
+                PersonData.BulletCurner = BitConverter.ToInt32(Buffer, 33);
 
                 if (Buffer[4] == 0)
                     PersonData.IsNewPerson = true;
+                else
+                    PersonData.IsNewPerson = false;
 
-                return false;
             }
         }
         
-        static bool GetPackage(BulletNetDataPackage BulletData , PersonNetDataPackage PersonData, List<Person> ls, int Port = 7777)
+        static void GetPackage(PersonNetDataPackage PersonData, List<Person> ls, int Port = 7777)
         {
             byte[] Buffer;         
             IPEndPoint RemoveIPEndPoint = null;
             UdpClient GetClient = new UdpClient(Port);
             Buffer = GetClient.Receive(ref RemoveIPEndPoint);
             GetClient.Close();
-            return ReadFromBuffer(BulletData, PersonData,Buffer,ls);  
+            ReadFromBuffer(PersonData,Buffer,ls);  
         }
         
         static void WaitTcpConnect(object ob)
@@ -211,11 +200,11 @@ namespace NetworkLibrary
                 buf = new byte[34];
                 Client.GetStream().Read(buf,0,34);
                 AddEv?.Invoke(IPAddress.Parse(buf[0] + "." + buf[1] + "." + buf[2] + "." + buf[3]), 7777);
-                BulletNetDataPackage BulletData = new BulletNetDataPackage();
-                PersonNetDataPackage PersonData = new PersonNetDataPackage();
-                bool IsBullet = ReadFromBuffer(BulletData,PersonData,buf,null);
 
-                Event?.Invoke(PersonData, false);
+                PersonNetDataPackage PersonData = new PersonNetDataPackage();
+                ReadFromBuffer(PersonData,buf,null);
+
+                Event?.Invoke(PersonData);
             }
             FileTools.Log("Person list got");
         }

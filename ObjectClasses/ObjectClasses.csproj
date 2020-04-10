@@ -43,7 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bullet.cs" />
-    <Compile Include="BulletNetDataPackage.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="PersonNetDataPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

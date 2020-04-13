@@ -137,7 +137,7 @@ namespace NetworkLibrary
 
                     ls.Add(new Person()
                     {
-                        ID = Buffer[4],
+                        ID = Buffer[3],
                         X = BitConverter.ToInt32(Buffer, 5),
                         Y = BitConverter.ToInt32(Buffer, 9),
                         XSpeed = BitConverter.ToInt32(Buffer, 13),

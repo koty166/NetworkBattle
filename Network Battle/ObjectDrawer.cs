@@ -96,6 +96,7 @@ namespace Network_Battle
             }
             return false;
         }
+
         public void Dispose()
         {
             ThObjectDrawer.Abort();

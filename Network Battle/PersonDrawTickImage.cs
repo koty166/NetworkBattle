@@ -10,7 +10,7 @@ namespace Network_Battle
     sealed internal class PersonDrawTickImage : ObjectForDraw
     {
         int _Stadia = 0, _AnimLenght , Pointer = 0;
-       internal Person _Person;
+        internal Person _Person;
         Image Bit;
         Image[] Anims;
 

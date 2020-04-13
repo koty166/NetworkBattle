@@ -33,7 +33,6 @@ namespace Network_Battle
         List<string> Animations = new List<string>();
         List<int> AnimationAddr = new List<int>() { 0 };
         List<Person> PersonList = new List<Person>();
-        byte LocalPersonID;
 
         public event EventsClass.PackageSave PackgeWasGot;
         public event EventsClass.AddToDrawList EventAddToDrawList;
@@ -97,7 +96,7 @@ namespace Network_Battle
             Per.YSpeed = Data.YSpeed;
 
             if (Data.BulletCurner != -1)
-                AddBullet(Data.BulletCurner, Per.X, Per.Y, Per);
+                AddBullet(Data.BulletCurner  * Math.PI / 180, Per.X + 48, Per.Y + 48, Per);
 
             ObjDraw.IsPersonInList(Per, true);
             ObjDraw.AddToObjectTicksList(Per, Data.AnimAddr, Data.AnimLenght, ref Anims, BattleField.Image);
@@ -118,8 +117,8 @@ namespace Network_Battle
             int AnimAddr, BulX = p.X + 48, BulY = p.Y + 48;
             double Curner = ToolsClass.CountCurner(X, Y, p.X, p.Y, out AnimAddr);
 
-            ObjDraw.AddToObjectTicksList(p, AnimationAddr[AnimAddr], 10, ref Anims, BattleField.Image);
-            OutNetConnect.SendPerson(p, AnimationAddr[AnimAddr], 10, false,(int)(Curner * 180 / Math.PI));
+            ObjDraw.AddToObjectTicksList(new Person() {X = p.X,Y = p.Y,XSpeed = 0, YSpeed = 0, ID = p.ID }, AnimationAddr[AnimAddr], 10, ref Anims, BattleField.Image);
+            OutNetConnect.SendPerson(new Person() { ID = p.ID, X = p.X, Y = p.Y, XSpeed = 0, YSpeed = 0 }, AnimationAddr[AnimAddr], 10, false, (int)(Curner * 180 / Math.PI));
             AddBullet(Curner,BulX,BulY,p);
         }
 
@@ -164,14 +163,7 @@ namespace Network_Battle
                 Y = Size.Height / 2,
             };
             int Lenght = Dns.GetHostAddresses(Dns.GetHostName()).Length;
-            LocalPerson.ID = byte.Parse(Dns.GetHostAddresses(Dns.GetHostName())[1].MapToIPv4().ToString().Split('.')[3]);
-            LocalPersonID = LocalPerson.ID;
-
-            LocalEnemy = new Person()
-            {
-                X = Width / 3,
-                Y = Height / 3
-            };
+            LocalPerson.ID = byte.Parse(Dns.GetHostAddresses(Dns.GetHostName())[Lenght - 1].MapToIPv4().ToString().Split('.')[3]);
 
 
             ////////////////////////////////
@@ -202,7 +194,6 @@ namespace Network_Battle
 
             Anims = LoadAnimations(Animations.ToArray());
             //////////////
-            ObjDraw.AddToObjectTicksList(LocalEnemy, AnimationAddr[7], -1, ref Anims, BattleField.Image);
             PersonList.Add(LocalPerson);
             /////////////////
         }

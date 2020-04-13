@@ -34,9 +34,9 @@ namespace Network_Battle
             lock(In.ObjDrawer.ObjectTicks)
                 foreach (var i in In.ObjDrawer.ObjectTicks)
                 {
-                    if(i.GetType() == new PersonDrawTickImage().GetType() && ((PersonDrawTickImage)i).IsNeedToDestroy == false)
+                    if(i is PersonDrawTickImage && ((PersonDrawTickImage)i).IsNeedToDestroy == false)
                         In.PersList.Add(((PersonDrawTickImage)i)._Person);
-                    else if(i.GetType() == new BulletDrawTickImage().GetType() && ((BulletDrawTickImage)i).IsNeedToDestroy == false)
+                    else if(i is BulletDrawTickImage && ((BulletDrawTickImage)i).IsNeedToDestroy == false)
                         In.BulletList.Add(((BulletDrawTickImage)i).Bul);
                 }
         }
@@ -51,10 +51,10 @@ namespace Network_Battle
                     Rectangle R1 = new Rectangle(i.X,i.Y,60,70);
                     foreach (var j in IC.BulletList)
                     {
-                        if (j.ParentPerson == i) continue;
+                        if (j.ParentPerson.ID == i.ID) continue;
                         Rectangle R2 = new Rectangle((int)j.X,(int)j.Y,5,5);
                         if (R1.IntersectsWith(R2))
-                            IC.ObjDrawer.IsPersonInList(i,true);
+                            IC.ObjDrawer.IsPersonInList(i.ID,true);
                     }
                 }
 

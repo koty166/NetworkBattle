@@ -25,7 +25,7 @@ namespace Network_Battle
         }
 
         Image[] Anims;
-        Person LocalPerson, LocalEnemy;///
+        //Person LocalPerson;///
         ObjectDrawer ObjDraw;
         IntersectController IC;
         PackageReciever InNetConnect;
@@ -98,12 +98,12 @@ namespace Network_Battle
             if (Data.BulletCurner != -1)
                 AddBullet(Data.BulletCurner  * Math.PI / 180, Per.X + 48, Per.Y + 48, Per);
 
-            ObjDraw.IsPersonInList(Per, true);
+            ObjDraw.IsPersonInList(Per.ID, true);
             ObjDraw.AddToObjectTicksList(Per, Data.AnimAddr, Data.AnimLenght, ref Anims, BattleField.Image);
 
         }
 
-        void AddBullet(double Curner, int X, int Y, Person Parent) => ObjDraw.AddToObjectTicksList(Width, Height, BattleField.Image, new Bullet(LocalPerson)
+        void AddBullet(double Curner, int X, int Y, Person Parent) => ObjDraw.AddToObjectTicksList(Width, Height, BattleField.Image, new Bullet(Parent)
         {
             X = X,
             Y = Y,
@@ -113,7 +113,7 @@ namespace Network_Battle
 
         void ShowShoot(int X, int Y, Person p)
         {
-            ObjDraw.IsPersonInList(p, true);
+            ObjDraw.IsPersonInList(p.ID, true);
             int AnimAddr, BulX = p.X + 48, BulY = p.Y + 48;
             double Curner = ToolsClass.CountCurner(X, Y, p.X, p.Y, out AnimAddr);
 
@@ -124,6 +124,7 @@ namespace Network_Battle
 
         void AddToDrList(Person _p, int _AnimL, ref Image[] Ims, Image Bitmap, int _Pointer)
         {
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
             _p.XSpeed = 0;
             _p.YSpeed = 0;
             ObjDraw.AddToObjectTicksList(_p, _Pointer, _AnimL, ref Ims, Bitmap);
@@ -131,7 +132,7 @@ namespace Network_Battle
 
         private void BattleField_MouseClick(object sender, MouseEventArgs e)
         {
-            ShowShoot(e.X, e.Y, LocalPerson);
+            ShowShoot(e.X, e.Y, PersonList[0]);
         }
 
         Image[] LoadAnimations(string[] AnimationPath)
@@ -157,14 +158,12 @@ namespace Network_Battle
         private void MainWindow_Load(object sender, EventArgs e)
         {
             ///////////////////////////////////////////
-            LocalPerson = new Person()
+            PersonList.Add(new Person()
             {
                 X = Size.Width / 2,
                 Y = Size.Height / 2,
-            };
-            int Lenght = Dns.GetHostAddresses(Dns.GetHostName()).Length;
-            LocalPerson.ID = byte.Parse(Dns.GetHostAddresses(Dns.GetHostName())[Lenght - 1].MapToIPv4().ToString().Split('.')[3]);
-
+                ID = byte.Parse(Dns.GetHostAddresses(Dns.GetHostName())[Dns.GetHostAddresses(Dns.GetHostName()).Length - 1].ToString().Split('.')[3])
+            });
 
             ////////////////////////////////
             EventAddToDrawList += AddToDrList;
@@ -193,9 +192,7 @@ namespace Network_Battle
             AddToAnimationList(Directory.GetFiles("Resourses//Person//", "walking e0*.bmp"));
 
             Anims = LoadAnimations(Animations.ToArray());
-            //////////////
-            PersonList.Add(LocalPerson);
-            /////////////////
+
         }
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -249,32 +246,32 @@ namespace Network_Battle
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
             int Speed = 5;
-            ObjDraw.IsPersonInList(LocalPerson, true);
+            ObjDraw.IsPersonInList(PersonList[0].ID, true);
             switch (e.KeyCode)
             {
                 case Keys.W:
-                    LocalPerson.YSpeed = -Speed;
-                    LocalPerson.XSpeed = 0;
-                    ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[8], 6, ref Anims, BattleField.Image);
-                    OutNetConnect.SendPerson(LocalPerson,AnimationAddr[8], 6,false,-1);
+                    PersonList[0].YSpeed = -Speed;
+                    PersonList[0].XSpeed = 0;
+                    ObjDraw.AddToObjectTicksList(PersonList[0], AnimationAddr[8], 6, ref Anims, BattleField.Image);
+                    OutNetConnect.SendPerson(PersonList[0], AnimationAddr[8], 6,false,-1);
                     break;
                 case Keys.A:
-                    LocalPerson.XSpeed = -Speed;
-                    LocalPerson.YSpeed = 0;
-                    ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[9], 6, ref Anims, BattleField.Image);
-                    OutNetConnect.SendPerson(LocalPerson, AnimationAddr[9], 6, false,-1);
+                    PersonList[0].XSpeed = -Speed;
+                    PersonList[0].YSpeed = 0;
+                    ObjDraw.AddToObjectTicksList(PersonList[0], AnimationAddr[9], 6, ref Anims, BattleField.Image);
+                    OutNetConnect.SendPerson(PersonList[0], AnimationAddr[9], 6, false,-1);
                     break;
                 case Keys.S:
-                    LocalPerson.YSpeed = Speed;
-                    LocalPerson.XSpeed = 0;
-                    ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[10], 6, ref Anims, BattleField.Image);
-                    OutNetConnect.SendPerson(LocalPerson, AnimationAddr[10], 6, false,-1);
+                    PersonList[0].YSpeed = Speed;
+                    PersonList[0].XSpeed = 0;
+                    ObjDraw.AddToObjectTicksList(PersonList[0], AnimationAddr[10], 6, ref Anims, BattleField.Image);
+                    OutNetConnect.SendPerson(PersonList[0], AnimationAddr[10], 6, false,-1);
                     break;
                 case Keys.D:
-                    LocalPerson.XSpeed = Speed;
-                    LocalPerson.YSpeed = 0;
-                    ObjDraw.AddToObjectTicksList(LocalPerson, AnimationAddr[11], 6, ref Anims, BattleField.Image);
-                    OutNetConnect.SendPerson(LocalPerson, AnimationAddr[11], 6, false,-1);
+                    PersonList[0].XSpeed = Speed;
+                    PersonList[0].YSpeed = 0;
+                    ObjDraw.AddToObjectTicksList(PersonList[0], AnimationAddr[11], 6, ref Anims, BattleField.Image);
+                    OutNetConnect.SendPerson(PersonList[0], AnimationAddr[11], 6, false,-1);
                     break;
             }
           

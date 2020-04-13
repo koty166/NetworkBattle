@@ -47,7 +47,5 @@ namespace Network_Battle
             _Stadia++;
             if (!IsNeedToDraw) _Stadia--;
         }
-
-       public bool Equals(Person _p) => _Person.ID == _p.ID;
     }
 }

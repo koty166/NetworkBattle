@@ -50,12 +50,17 @@ namespace Network_Battle
                 lock (ListObj)
                 {
                     foreach (var i in ListObj)
-                        i.Draw(IsNeedToDraw);
+                    {
+                        if (i is PersonDrawTickImage)
+                            ((PersonDrawTickImage)i).Draw(IsNeedToDraw);
+                        else
+                            ((BulletDrawTickImage)i).Draw(IsNeedToDraw);
+                    }
 
                     for (int i = 0; i < ListObj.Count; i++)
                         if (ListObj[i].IsNeedToDestroy)
                         {
-                            if (ListObj[i].GetType() == new PersonDrawTickImage().GetType())
+                            if (ListObj[i] is PersonDrawTickImage)
                                 ((PersonDrawTickImage)ListObj[i]).InvokeEventForAddToDrawList(EvNeedToAddStaticPicture);
                             ListObj.RemoveAt(i);
                         } 
@@ -75,17 +80,16 @@ namespace Network_Battle
             }
         }
 
-        public bool IsPersonInList(Person _P , bool IsNeedToRemove)
+        public bool IsPersonInList(int ID , bool IsNeedToRemove)
         {
             lock (ObjectTicks)
             {
                 for (int i = 0; i < ObjectTicks.Count; i++)
                 {
-                    if (ObjectTicks[i].GetType() == new PersonDrawTickImage().GetType() && ((PersonDrawTickImage)ObjectTicks[i]).Equals(_P))
+                    if (ObjectTicks[i] is PersonDrawTickImage && ((PersonDrawTickImage)ObjectTicks[i])._Person.ID == ID)
                     {
                         if (IsNeedToRemove)
                         {
-                            _P.DeadNum++;
                             ObjectTicks.RemoveAt(i);
                         }
                         return true;

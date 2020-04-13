@@ -86,7 +86,7 @@ namespace NetworkLibrary
 
         public void SendingIniPackage(Person LocalPerson)
         {
-            byte[] MainPackage = new byte[22] , buf;
+            byte[] MainPackage = new byte[26] , buf;
             MainPackage[4] = 3;
 
             string[] Strings = new string[4];
@@ -101,10 +101,16 @@ namespace NetworkLibrary
             String Addr;
             UdpClient Client = new UdpClient();
 
+            int Lenght = Dns.GetHostAddresses(Dns.GetHostName()).Length;
+            string s = Dns.GetHostAddresses(Dns.GetHostName())[Lenght - 1].MapToIPv4().ToString();
             for (int i = 1; i < 255; i++)
             {
+                
                 Strings[3] = i.ToString();
                 Addr = Strings[0] + "." + Strings[1] + "." + Strings[2] + "." + Strings[3];
+                if (Addr == s)
+                    continue;
+
                 MainPackage[0] = byte.Parse(Strings[0]);
                 MainPackage[1] = byte.Parse(Strings[1]);
                 MainPackage[2] = byte.Parse(Strings[2]);

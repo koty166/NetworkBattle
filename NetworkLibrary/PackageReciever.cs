@@ -127,10 +127,7 @@ namespace NetworkLibrary
                 object[] ob = new object[2];
                 ob[0] = RemoveAddr;
                 ob[1] = ls;
-                int Lenght = Dns.GetHostAddresses(Dns.GetHostName()).Length;
-                string s = Dns.GetHostAddresses(Dns.GetHostName())[Lenght - 1].MapToIPv4().ToString();
-                if (RemoveAddr != s)
-                {
+               
                     SendPersons.Start(ob);//Start sending person list
                     PersonData.PersonID = -1;
                     PersonData.X = Buffer[0];
@@ -146,11 +143,7 @@ namespace NetworkLibrary
                         XSpeed = BitConverter.ToInt32(Buffer, 13),
                         YSpeed = BitConverter.ToInt32(Buffer, 17)
                     });
-                }
-                else
-                {
-                    PersonData.PersonID = -2;//this package isn`t avalible addres == local addrers
-                }
+
             }
             else
             {
@@ -170,15 +163,15 @@ namespace NetworkLibrary
 
             }
         }
-        
+
         static void GetPackage(PersonNetDataPackage PersonData, List<Person> ls, int Port = 7777)
         {
-            byte[] Buffer;         
+            byte[] Buffer;
             IPEndPoint RemoveIPEndPoint = null;
             UdpClient GetClient = new UdpClient(Port);
             Buffer = GetClient.Receive(ref RemoveIPEndPoint);
             GetClient.Close();
-            ReadFromBuffer(PersonData,Buffer,ls);  
+            ReadFromBuffer(PersonData, Buffer, ls);
         }
         
         static void WaitTcpConnect(object ob)
@@ -197,8 +190,8 @@ namespace NetworkLibrary
             int Length = BitConverter.ToInt32(buf,0);
             for (int i = 0; i < Length; i++)
             {
-                buf = new byte[34];
-                Client.GetStream().Read(buf,0,34);
+                buf = new byte[37];
+                Client.GetStream().Read(buf,0,37);
                 AddEv?.Invoke(IPAddress.Parse(buf[0] + "." + buf[1] + "." + buf[2] + "." + buf[3]), 7777);
 
                 PersonNetDataPackage PersonData = new PersonNetDataPackage();

@@ -98,6 +98,7 @@ namespace Network_Battle
 
             if (Data.BulletCurner != -1)
                 AddBullet(Data.BulletCurner, Per.X, Per.Y, Per);
+
             ObjDraw.IsPersonInList(Per, true);
             ObjDraw.AddToObjectTicksList(Per, Data.AnimAddr, Data.AnimLenght, ref Anims, BattleField.Image);
 
@@ -117,8 +118,8 @@ namespace Network_Battle
             int AnimAddr, BulX = p.X + 48, BulY = p.Y + 48;
             double Curner = ToolsClass.CountCurner(X, Y, p.X, p.Y, out AnimAddr);
 
-            ObjDraw.AddToObjectTicksList(p, AnimationAddr[7], 10, ref Anims, BattleField.Image);
-            OutNetConnect.SendPerson(p, AnimationAddr[7], 10, false,(int)(Curner * 180 / Math.PI));
+            ObjDraw.AddToObjectTicksList(p, AnimationAddr[AnimAddr], 10, ref Anims, BattleField.Image);
+            OutNetConnect.SendPerson(p, AnimationAddr[AnimAddr], 10, false,(int)(Curner * 180 / Math.PI));
             AddBullet(Curner,BulX,BulY,p);
         }
 

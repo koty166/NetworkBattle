@@ -197,7 +197,7 @@ namespace NetworkLibrary
                 PersonNetDataPackage PersonData = new PersonNetDataPackage();
                 ReadFromBuffer(PersonData,buf,null);
 
-                Event?.Invoke(PersonData);
+                Event?.BeginInvoke(PersonData,null,null);
             }
             FileTools.Log("Person list got");
         }

@@ -35,9 +35,11 @@ namespace Network_Battle
                 g = Graphics.FromImage((Image)((object[])m)[0]);
 
             List<ObjectForDraw> ListObj = (List<ObjectForDraw>)((object[])m)[1];
-            MainWindow MainWin = (MainWindow)Application.OpenForms[0];
             EventsClass.AddToDrawList EvNeedToAddStaticPicture = ((EventsClass.AddToDrawList)((object[])m)[2]);
             SynchronizationContext SynContext = ((SynchronizationContext)((object[])m)[3]);
+
+            Image BattleFieldIm = Image.FromFile("Resourses\\Battle field.bmp");
+            MainWindow MainWin = (MainWindow)Application.OpenForms[0];
 
             int Pause = 25;
             const int MaxTicks = 4;
@@ -45,8 +47,9 @@ namespace Network_Battle
             bool IsNeedToDraw = true;
 
             while (true)
-            {
-                g.Clear(Color.AntiqueWhite);
+            { 
+                g.DrawImage(BattleFieldIm,0,0);
+                //g.Clear(Color.AntiqueWhite);
                 lock (ListObj)
                 {
                     foreach (var i in ListObj)

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1062
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Network Battle", "Network Battle\Network Battle.csproj", "{5936F8B4-ADB6-416E-8ABC-07D0C8AA7403}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkLibrary", "NetworkLibrary\NetworkLibrary.csproj", "{6AECAC2D-8B50-4A9A-BBA5-5DDB46153734}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events", "Events\Events.csproj", "{3408AF0A-F5F1-401F-AB74-91A7A25EA33F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGLDrawLibrary", "..\WindowsFormsApp1\SharpGLDrawLibrary\SharpGLDrawLibrary.csproj", "{D1FB4328-32E5-4656-906A-54268B916927}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{3408AF0A-F5F1-401F-AB74-91A7A25EA33F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3408AF0A-F5F1-401F-AB74-91A7A25EA33F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3408AF0A-F5F1-401F-AB74-91A7A25EA33F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1FB4328-32E5-4656-906A-54268B916927}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1FB4328-32E5-4656-906A-54268B916927}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1FB4328-32E5-4656-906A-54268B916927}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1FB4328-32E5-4656-906A-54268B916927}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

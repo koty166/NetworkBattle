@@ -124,7 +124,6 @@ namespace Network_Battle
 
         void AddToDrList(Person _p, int _AnimL, ref Image[] Ims, Image Bitmap, int _Pointer)
         {
-            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
             _p.XSpeed = 0;
             _p.YSpeed = 0;
             ObjDraw.AddToObjectTicksList(_p, _Pointer, _AnimL, ref Ims, Bitmap);
@@ -192,6 +191,7 @@ namespace Network_Battle
             AddToAnimationList(Directory.GetFiles("Resourses//Person//", "walking e0*.bmp"));
 
             Anims = LoadAnimations(Animations.ToArray());
+            
 
         }
 

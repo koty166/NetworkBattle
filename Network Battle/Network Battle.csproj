@@ -48,6 +48,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpGL, Version=2.4.1.2, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpGL.2.4.1.2\lib\net40-client\SharpGL.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpGL.WinForms, Version=2.4.1.2, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpGL.WinForms.2.4.1.2\lib\net40\SharpGL.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -86,6 +92,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -128,6 +135,10 @@
       <Project>{cf19b012-ea25-4f93-9770-a11960123a81}</Project>
       <Name>Tools</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SharpGL.ico" />
+    <Content Include="SharpGL.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using ObjectClasses;
 
 namespace Tools
 {
@@ -16,7 +16,7 @@ namespace Tools
                 PointerA++;
             }
         }
-        public static double CountCurner(int X,int Y, int ParentX , int ParentY , out int AnimAddr)
+        public static float CountCurner(int X,int Y, float ParentX , float ParentY , out int AnimAddr)
         {
             double Curner = 0; 
             double OX = ParentX + 48, OY = ParentY + 48;
@@ -63,13 +63,21 @@ namespace Tools
             }
 
             else AnimAddr = -1;
-            return Curner;
+            return (float)Curner;
         }
         public static void CountBulletStartPoint(ref int X, ref int Y, double Curner, int Speed = 30)
         { 
 
             X += (int)(Math.Cos(2 * Math.PI - Curner) * Speed);
             Y += (int)(Math.Sin(2 * Math.PI - Curner) * Speed);
+        }
+
+        public static void ActivateAnimation(Person p, int IdleAnimAddr, int MaxAnimAddr, int CurrentAnimAddr)
+        {
+            p.MaxAnimAddr = MaxAnimAddr;
+            p.CurrentAnimAddr = CurrentAnimAddr;
+            p.IsIdle = false;
+            p.IdleAnimAddr = IdleAnimAddr;
         }
 
     }

@@ -70,7 +70,7 @@ namespace Network_Battle
                 }
                 Thread.Sleep(Pause);
 
-                SynContext.Send(_ => MainWin.BattleField.Refresh(),null);
+              //  SynContext.Send(_ => MainWin.BattleField.Refresh(),null);
 
                 if (Ticks == 1)
                     IsNeedToDraw = false;

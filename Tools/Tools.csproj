@@ -47,5 +47,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToolsClass.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ObjectClasses\ObjectClasses.csproj">
+      <Project>{aec8bf3a-0e32-4f8c-a5ec-4a6ae9bc1e6a}</Project>
+      <Name>ObjectClasses</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

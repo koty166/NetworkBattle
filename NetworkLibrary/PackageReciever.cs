@@ -129,7 +129,7 @@ namespace NetworkLibrary
                 ob[1] = ls;
                
                     SendPersons.Start(ob);//Start sending person list
-                    PersonData.PersonID = -1;
+                    PersonData.PersonID = 0;
                     PersonData.X = Buffer[0];
                     PersonData.Y = Buffer[1];
                     PersonData.XSpeed = Buffer[2];
@@ -147,7 +147,7 @@ namespace NetworkLibrary
             }
             else
             {
-                PersonData.PersonID = BitConverter.ToInt32(Buffer, 5);
+                PersonData.PersonID = Buffer[5];
                 PersonData.X = BitConverter.ToInt32(Buffer, 9);
                 PersonData.Y = BitConverter.ToInt32(Buffer, 13);
                 PersonData.XSpeed = BitConverter.ToInt32(Buffer, 17);

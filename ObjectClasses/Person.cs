@@ -8,8 +8,12 @@ namespace ObjectClasses
 {
    public class Person
     {
-        public int X, Y, XSpeed, YSpeed;
+        public float X, Y, XSpeed, YSpeed;
         public byte ID;
         public int DeadNum = 0;
+        public int CurrentAnimAddr, IdleAnimAddr,MaxAnimAddr;
+        public bool IsIdle = false;
+
+        public const float SizeX = 0.5f, SizeY = 0.5f;
     }
 }

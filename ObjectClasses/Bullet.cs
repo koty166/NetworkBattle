@@ -8,9 +8,9 @@ namespace ObjectClasses
 {
    public class Bullet
     {
-        public double Curner;
+        public float Curner;
         const int Size = 5, Speed = 5;
-        public double X, Y;
+        public float X, Y;
         public Person ParentPerson;
 
         public Bullet()
@@ -20,7 +20,7 @@ namespace ObjectClasses
             ParentPerson = _P;
         }
 
-        void CountCoordinats(out double NextX, out double NextY)
+        void CountCoordinats(out float NextX, out float NextY)
         {
              NextX = (int)(Math.Cos(2 * Math.PI - Curner) * Speed) + X;
              NextY = (int)(Math.Sin(2 * Math.PI - Curner) * Speed) + Y;
@@ -28,8 +28,7 @@ namespace ObjectClasses
 
         public bool Tick(Rectangle Border)
         {
-            Random r = new Random();
-            CountCoordinats(out double NextX, out double NextY);
+            CountCoordinats(out float NextX, out float NextY);
 
             if (NextX + Size * 2 > Border.Right || NextY + Size * 2 > Border.Bottom
                 || NextX < Border.Left || NextY < Border.Top)

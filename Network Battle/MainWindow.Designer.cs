@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
-            this.BattleField = new System.Windows.Forms.PictureBox();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripSplitButton();
@@ -37,20 +37,11 @@
             this.показатьСписокПерсонажейToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.локальныйАдрессToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.списокСмертейToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            ((System.ComponentModel.ISupportInitialize)(this.BattleField)).BeginInit();
+            this.openGLControl1 = new SharpGL.OpenGLControl();
+            this.PersonImageMaker = new System.Windows.Forms.Timer(this.components);
             this.toolStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.openGLControl1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // BattleField
-            // 
-            this.BattleField.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BattleField.Image = ((System.Drawing.Image)(resources.GetObject("BattleField.Image")));
-            this.BattleField.Location = new System.Drawing.Point(0, 0);
-            this.BattleField.Name = "BattleField";
-            this.BattleField.Size = new System.Drawing.Size(800, 450);
-            this.BattleField.TabIndex = 0;
-            this.BattleField.TabStop = false;
-            this.BattleField.MouseClick += new System.Windows.Forms.MouseEventHandler(this.BattleField_MouseClick);
             // 
             // toolStrip1
             // 
@@ -59,7 +50,7 @@
             this.toolStripButton2});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(800, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(484, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -116,21 +107,44 @@
             this.списокСмертейToolStripMenuItem.Text = "Список смертей";
             this.списокСмертейToolStripMenuItem.Click += new System.EventHandler(this.списокСмертейToolStripMenuItem_Click);
             // 
+            // openGLControl1
+            // 
+            this.openGLControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.openGLControl1.DrawFPS = true;
+            this.openGLControl1.FrameRate = 200;
+            this.openGLControl1.Location = new System.Drawing.Point(0, 25);
+            this.openGLControl1.Name = "openGLControl1";
+            this.openGLControl1.OpenGLVersion = SharpGL.Version.OpenGLVersion.OpenGL2_1;
+            this.openGLControl1.RenderContextType = SharpGL.RenderContextType.DIBSection;
+            this.openGLControl1.RenderTrigger = SharpGL.RenderTrigger.TimerBased;
+            this.openGLControl1.Size = new System.Drawing.Size(484, 436);
+            this.openGLControl1.TabIndex = 2;
+            this.openGLControl1.OpenGLInitialized += new System.EventHandler(this.openGLControl1_OpenGLInitialized);
+            this.openGLControl1.OpenGLDraw += new SharpGL.RenderEventHandler(this.openGLControl1_OpenGLDraw);
+            this.openGLControl1.Resized += new System.EventHandler(this.openGLControl1_Resized);
+            this.openGLControl1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainWindow_KeyDown);
+            this.openGLControl1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.openGLControl1_MouseClick);
+            // 
+            // PersonImageMaker
+            // 
+            this.PersonImageMaker.Enabled = true;
+            this.PersonImageMaker.Tick += new System.EventHandler(this.PersonImageMaker_Tick);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(484, 461);
+            this.Controls.Add(this.openGLControl1);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.BattleField);
             this.DoubleBuffered = true;
             this.Name = "MainWindow";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainWindow_KeyDown);
-            ((System.ComponentModel.ISupportInitialize)(this.BattleField)).EndInit();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.openGLControl1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -142,8 +156,6 @@
         }
 
         #endregion
-
-        internal System.Windows.Forms.PictureBox BattleField;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripSplitButton toolStripButton2;
@@ -151,6 +163,8 @@
         private System.Windows.Forms.ToolStripMenuItem показатьСписокПерсонажейToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem локальныйАдрессToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem списокСмертейToolStripMenuItem;
+        private SharpGL.OpenGLControl openGLControl1;
+        private System.Windows.Forms.Timer PersonImageMaker;
     }
 }
 

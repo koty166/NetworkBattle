@@ -48,7 +48,7 @@ namespace Network_Battle
                 Initialize(IC);
                 foreach (var i in IC.PersList)
                 {
-                    Rectangle R1 = new Rectangle(i.X,i.Y,60,70);
+                    Rectangle R1 = new Rectangle((int)i.X,(int)i.Y,60,70);
                     foreach (var j in IC.BulletList)
                     {
                         if (j.ParentPerson.ID == i.ID) continue;

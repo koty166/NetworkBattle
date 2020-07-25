@@ -16,7 +16,7 @@ using Tools;
 using SharpGL;
 using SharpGL.SceneGraph.Assets;
 using SharpGLDrawLibrary;
-
+using System.Text;
 
 namespace Network_Battle
 {
@@ -28,8 +28,6 @@ namespace Network_Battle
         }
 
         Texture[] Anims;
-        ObjectDrawer ObjDraw;
-        IntersectController IC;
         PackageReciever InNetConnect;
         PackageSender OutNetConnect;
         List<string> Animations = new List<string>();
@@ -38,7 +36,6 @@ namespace Network_Battle
         List<Bullet> BulletList = new List<Bullet>();
 
         public event EventsClass.PackageSave PackgeWasGot;
-        public event EventsClass.AddToDrawList EventAddToDrawList;
         public event EventsClass.AddToAddrList AddToNetAddrList;
 
         Person GetPersonByID(int ID)
@@ -51,85 +48,62 @@ namespace Network_Battle
             return null;
         }
 
-        bool IsPerInColl(byte ID)
-        {
-            foreach (var i in PersonList)
-            {
-                if (i.ID == ID)
-                    return true;
-
-            }
-            return false;
-
-        }
-
         void AddNetObject(object Package)
         {
-            PersonNetDataPackage Data = (PersonNetDataPackage)Package;
+            NetDataPackage Data = (NetDataPackage)Package;
             Person Per;
-            if (Data.PersonID == -2)
+            //if (Data.)
+           //     return;
+
+            if (Data.ID == 0)
+            {
+                StringBuilder RemoveAddr = new StringBuilder(20);
+                foreach (var item in Data.SourseIp)
+                {
+                    RemoveAddr.Append(item);
+                    RemoveAddr.Append('.');
+                }
+                OutNetConnect.AddToAddrIPList(RemoveAddr.ToString());
                 return;
-
-            else if (Data.PersonID == -1)
-            {
-                string RemoveAddr = Data.X.ToString() + "." + Data.Y.ToString() + "." + Data.XSpeed.ToString() + "." + Data.YSpeed.ToString();
-                OutNetConnect.AddToAddrIPList(RemoveAddr);
-                return;
             }
 
-            if (!Data.IsNewPerson)
-            {
-                Per = GetPersonByID(Data.PersonID);
 
-                if (Per == null)
-                    return;
-            }
-            else
-            {
-                Per = new Person();
-                Per.ID = (byte)Data.PersonID;
-                if (!IsPerInColl(Per.ID))
-                    PersonList.Add(Per);
+            object PrePerson = GetPersonByID(Data.ID);
 
-            }
+            Per = PrePerson == null ? new Person() { ID = Data.ID} : (Person)PrePerson;
 
             Per.X = Data.X;
             Per.Y = Data.Y;
             Per.XSpeed = Data.XSpeed;
             Per.YSpeed = Data.YSpeed;
 
-            if (Data.BulletCurner != -1)
-                AddBullet(Data.BulletCurner * (float)Math.PI / 180, Per.X + 48, Per.Y + 48, Per);
+            if (PrePerson == null)
+                PersonList.Add(Per);
 
-            ObjDraw.IsPersonInList(Per.ID, true);
-            // ObjDraw.AddToObjectTicksList(Per, Data.AnimAddr, Data.AnimLenght, ref Anims, BattleField.Image);
-
+            if (Data.BulletCurner != 10)
+                AddBullet(Data.BulletCurner, Per.X + 48, Per.Y + 48, Per);
         }
 
         void AddBullet(float Curner, float X, float Y, Person Parent) => BulletList.Add( new Bullet(Parent)
         {
             X = X,
             Y = Y,
-            Curner = Curner,
-            ParentPerson = Parent
+            Curner = Curner
         });
 
+        
         void ShowShoot(int X, int Y, Person p)
         {
             int AnimAddr;
             float BulX = p.X + Person.SizeX / 2, BulY = p.Y + Person.SizeY / 2;
+            p.XSpeed = 0;
+            p.YSpeed = 0;
             float Curner = ToolsClass.CountCurner(X, Y, p.X, p.Y, out AnimAddr);
 
-            // ObjDraw.AddToObjectTicksList(new Person() {X = p.X,Y = p.Y,XSpeed = 0, YSpeed = 0, ID = p.ID }, AnimationAddr[AnimAddr], 10, ref Anims, BattleField.Image);
-           // OutNetConnect.SendPerson(new Person() { ID = p.ID, X = p.X, Y = p.Y, XSpeed = 0, YSpeed = 0 }, AnimationAddr[AnimAddr], 10, false, (int)(Curner * 180 / Math.PI));
-            AddBullet(Curner, BulX, BulY, p);
-        }
+           p.ChangeAnim(AnimationAddr[AnimAddr] , AnimationAddr[AnimAddr + 1]);
 
-        void AddToDrList(Person _p, int _AnimL, ref Image[] Ims, Image Bitmap, int _Pointer)
-        {
-            _p.XSpeed = 0;
-            _p.YSpeed = 0;
-            ObjDraw.AddToObjectTicksList(_p, _Pointer, _AnimL, ref Ims, Bitmap);
+            OutNetConnect.SendPerson(p, (int)(Curner * 180 / Math.PI));
+            AddBullet(Curner, BulX, BulY, p);
         }
 
         Texture[] LoadAnimations(OpenGL gl, string[] AnimationPath)
@@ -161,12 +135,11 @@ namespace Network_Battle
 
             this.DesktopLocation = new Point(0, 0);
             ////////////////////////////////
-            EventAddToDrawList += AddToDrList;
             PackgeWasGot += AddNetObject;
 
             // ObjDraw = new ObjectDrawer(BattleField.Image, EventAddToDrawList, SynchronizationContext.Current);
             // IC = new IntersectController(ObjDraw);
-            //OutNetConnect = new PackageSender();
+            OutNetConnect = new PackageSender();
 
             //  AddToNetAddrList += OutNetConnect.AddToAddrIPList;
             //  InNetConnect = new PackageReciever(PackgeWasGot, PersonList, AddToNetAddrList);
@@ -202,7 +175,6 @@ namespace Network_Battle
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // ObjDraw.Dispose();
             // IC.Dispose();
             // InNetConnect.Dispose();
             // InNetConnect.DisposeTcpClient();
@@ -240,12 +212,12 @@ namespace Network_Battle
 
         private void списокСмертейToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string s = "";
+           /* string s = "";
             foreach (var i in PersonList)
             {
                 s += i.ID + ":" + i.DeadNum + "\n";
             }
-            MessageBox.Show(s);
+            MessageBox.Show(s);*/
         }
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
@@ -312,14 +284,14 @@ namespace Network_Battle
             foreach (var i in PersonList)
             {
                 gl.Enable(OpenGL.GL_BLEND);
-                gl.BlendFunc(1, 0);
+                //gl.BlendFunc(1, 0);
 
                 Drawer.DrawImageByGl(gl, Anims[i.CurrentAnimAddr], i.X, i.Y, -0.5f, -0.5f, -0.5f);
                 gl.Disable(OpenGL.GL_BLEND);
             }
             foreach (var i in BulletList)
             {
-                Drawer.DrawCIRCLE(gl,Color.Red,i.X,i.Y,0,0.05f,10);
+                Drawer.DrawCIRCLE(gl,Color.Red,i.X,i.Y,0);
             }
             gl.Flush();
         }
@@ -346,7 +318,7 @@ namespace Network_Battle
             }
             foreach (var i in BulletList)
             {
-                i.Tick(new Rectangle(-5,-5,5,5));
+                i.Tick(new Rectangle(-10,-10,20,20));
             }
 
 
@@ -366,7 +338,7 @@ namespace Network_Battle
             Field = new Texture();
             Field.Create(gl, "field.bmp");
 
-            gl.ClearColor(Color.Black.R, Color.Black.G, Color.Black.B, Color.Black.A);
+            //gl.ClearColor(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, Color.Yellow.A);
             gl.Enable(OpenGL.GL_TEXTURE_2D);
 
             UpdateScreen(gl);

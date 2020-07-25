@@ -8,8 +8,8 @@ namespace ObjectClasses
 {
    public class Bullet
     {
-        public float Curner;
-        const int Size = 5, Speed = 5;
+        public float Curner;//like radian
+        const float Size = 0.01f, Speed = 0.05f;
         public float X, Y;
         public Person ParentPerson;
 
@@ -22,8 +22,8 @@ namespace ObjectClasses
 
         void CountCoordinats(out float NextX, out float NextY)
         {
-             NextX = (int)(Math.Cos(2 * Math.PI - Curner) * Speed) + X;
-             NextY = (int)(Math.Sin(2 * Math.PI - Curner) * Speed) + Y;
+             NextX = ((float)Math.Cos(2 * Math.PI - Curner) * Speed) + X;
+             NextY = ((float)Math.Sin(2 * Math.PI - Curner) * Speed) + Y;
         }
 
         public bool Tick(Rectangle Border)

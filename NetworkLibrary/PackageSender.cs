@@ -14,20 +14,11 @@ namespace NetworkLibrary
         {
             AddrIPList = new List<IPEndPoint>();
         }
-        public void SendPerson(Person Per, int AnimAddr, int AnimLenght, bool IsNewPerson, int BulletCurner)
+        public void SendPerson(Person Per, float _BulletCurner)
         {
-            PersonNetDataPackage Package = new PersonNetDataPackage()
-            {
-                PersonID = Per.ID,
-                X = Per.X,
-                Y = Per.Y,
-                XSpeed = Per.XSpeed,
-                YSpeed = Per.YSpeed,
-                AnimAddr = AnimAddr,
-                AnimLenght = AnimLenght,
-                IsNewPerson = IsNewPerson,
-                BulletCurner = BulletCurner
-            };
+            NetDataPackage Package = ToolsClass.ConvertPersonToNetDataPackege(Per,_BulletCurner);
+
+            Package.BulletCurner = _BulletCurner;
 
             foreach (var i in AddrIPList)
             {
@@ -36,48 +27,14 @@ namespace NetworkLibrary
             FileTools.Log("Person sended to all users");
         }
 
-        static byte[] ConvertPackageToArray(PersonNetDataPackage Package)
-        {
-            byte[] MainPackage = new byte[37], buf;
+     
 
-            if (Package.IsNewPerson)
-                MainPackage[4] = 0;
-            else
-                MainPackage[4] = 2;
-
-            buf = BitConverter.GetBytes(Package.PersonID);
-            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 5, 0, 4);
-
-            buf = BitConverter.GetBytes(Package.X);
-            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 9, 0, 4);
-
-            buf = BitConverter.GetBytes(Package.Y);
-            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 13, 0, 4);
-
-            buf = BitConverter.GetBytes(Package.XSpeed);
-            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 17, 0, 4);
-
-            buf = BitConverter.GetBytes(Package.YSpeed);
-            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 21, 0, 4);
-
-            buf = BitConverter.GetBytes(Package.AnimAddr);
-            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 25, 0, 4);
-
-            buf = BitConverter.GetBytes(Package.AnimLenght);
-            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 29, 0, 4);
-
-            buf = BitConverter.GetBytes(Package.BulletCurner);
-            ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 33, 0, 4);
-
-            return MainPackage;
-        }
-
-        void SendPersonDataPackage(PersonNetDataPackage Package, IPEndPoint EndPoint)
+        void SendPersonDataPackage(NetDataPackage Package, IPEndPoint EndPoint)
         {
             byte[] MainPackage;
             UdpClient GetClient = new UdpClient();
 
-            MainPackage =  ConvertPackageToArray(Package);
+            MainPackage =  ToolsClass.ConvertPackageToArray(Package);
 
             GetClient.Send(MainPackage, MainPackage.Length, EndPoint);
             GetClient.Close();
@@ -86,8 +43,7 @@ namespace NetworkLibrary
 
         public void SendingIniPackage(Person LocalPerson)
         {
-            byte[] MainPackage = new byte[26] , buf;
-            MainPackage[4] = 3;
+            byte[] MainPackage = new byte[26];
 
             string[] Strings = new string[4];
             foreach (var i in Dns.GetHostAddresses(Dns.GetHostName()))
@@ -103,35 +59,22 @@ namespace NetworkLibrary
 
             int Lenght = Dns.GetHostAddresses(Dns.GetHostName()).Length;
             string s = Dns.GetHostAddresses(Dns.GetHostName())[Lenght - 1].MapToIPv4().ToString();
+
+            MainPackage = ToolsClass.ConvertPackageToArray(ToolsClass.ConvertPersonToNetDataPackege(LocalPerson,10));
+
+            MainPackage[0] = byte.Parse(Strings[0]);
+            MainPackage[1] = byte.Parse(Strings[1]);
+            MainPackage[2] = byte.Parse(Strings[2]);
+            MainPackage[3] = byte.Parse(LocalAddrLast);
+
+            MainPackage[4] = 2;
+
             for (int i = 1; i < 255; i++)
             {
-                
                 Strings[3] = i.ToString();
                 Addr = Strings[0] + "." + Strings[1] + "." + Strings[2] + "." + Strings[3];
                 if (Addr == s)
                     continue;
-
-                MainPackage[0] = byte.Parse(Strings[0]);
-                MainPackage[1] = byte.Parse(Strings[1]);
-                MainPackage[2] = byte.Parse(Strings[2]);
-                MainPackage[3] = byte.Parse(LocalAddrLast);
-
-                MainPackage[4] = 3;
-                MainPackage[5] = LocalPerson.ID;
-                buf = BitConverter.GetBytes(LocalPerson.X);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 6, 0, 4);
-
-                buf = BitConverter.GetBytes(LocalPerson.Y);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 10, 0, 4);
-
-                buf = BitConverter.GetBytes(LocalPerson.XSpeed);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 14, 0, 4);
-
-                buf = BitConverter.GetBytes(LocalPerson.YSpeed);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 18, 0, 4);
-
-                buf = BitConverter.GetBytes(-1);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 22, 0, 4);
 
                 Client.Send(MainPackage, MainPackage.Length, new IPEndPoint(IPAddress.Parse(Addr), 7777));
             }

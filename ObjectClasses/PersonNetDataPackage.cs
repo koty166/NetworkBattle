@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace ObjectClasses
 {
-    public class PersonNetDataPackage
+    public class NetDataPackage : Person
     {
-        public int AnimAddr, AnimLenght;
-        public byte PersonID;
-        public float X, Y, XSpeed, YSpeed, BulletCurner;
-        public bool IsNewPerson;
+        public float BulletCurner;
+        public byte[] SourseIp = new byte[4];
     }
 }

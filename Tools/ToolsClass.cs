@@ -80,5 +80,76 @@ namespace Tools
             p.IdleAnimAddr = IdleAnimAddr;
         }
 
+        public static NetDataPackage ConvertPersonToNetDataPackege(Person Per, float _BulletCurner) =>  new NetDataPackage()
+        {
+                X = Per.X, Y = Per.Y,
+                XSpeed = Per.XSpeed, YSpeed = Per.YSpeed,
+                ID = Per.ID,
+                IsIdle = Per.IsIdle,
+                BulletCurner = _BulletCurner,
+                CurrentAnimAddr = Per.CurrentAnimAddr,
+                IdleAnimAddr = Per.IdleAnimAddr,
+                MaxAnimAddr = Per.MaxAnimAddr
+            };
+
+        public static NetDataPackage ArrayToNetDataPackege(byte[] Data)
+        {
+            NetDataPackage PDataOut = new NetDataPackage();
+
+            PDataOut.ID = Data[5];
+            PDataOut.X = BitConverter.ToInt32(Data, 5);
+            PDataOut.Y = BitConverter.ToInt32(Data, 9);
+            PDataOut.XSpeed = BitConverter.ToInt32(Data, 13);
+            PDataOut.YSpeed = BitConverter.ToInt32(Data, 17);
+            PDataOut.CurrentAnimAddr = BitConverter.ToInt32(Data, 21);
+            PDataOut.IdleAnimAddr = BitConverter.ToInt32(Data, 25);
+            PDataOut.MaxAnimAddr = BitConverter.ToInt32(Data, 29);
+            PDataOut.BulletCurner = BitConverter.ToInt32(Data, 33);
+
+            if (Data[4] == 2)
+            {
+                PDataOut.ID = 0;
+                Array.Copy(Data,0,PDataOut.SourseIp,0,4);
+
+            }
+
+            return PDataOut;
+        }
+
+        public static byte[] ConvertPackageToArray(NetDataPackage Package)
+        {
+            byte[] MainPackage = new byte[37], buf;
+
+            Array.Copy(Package.SourseIp,0,MainPackage,0,4);
+                
+            MainPackage[3] = Package.ID;
+
+            buf = BitConverter.GetBytes(Package.X);
+            CopyFromArrayToArry(ref MainPackage, ref buf, 5, 0, 4);
+
+            buf = BitConverter.GetBytes(Package.Y);
+            CopyFromArrayToArry(ref MainPackage, ref buf, 9, 0, 4);
+
+            buf = BitConverter.GetBytes(Package.XSpeed);
+            CopyFromArrayToArry(ref MainPackage, ref buf, 13, 0, 4);
+
+            buf = BitConverter.GetBytes(Package.YSpeed);
+            CopyFromArrayToArry(ref MainPackage, ref buf, 17, 0, 4);
+
+            buf = BitConverter.GetBytes(Package.CurrentAnimAddr);
+            CopyFromArrayToArry(ref MainPackage, ref buf, 21, 0, 4);
+
+            buf = BitConverter.GetBytes(Package.IdleAnimAddr);
+            CopyFromArrayToArry(ref MainPackage, ref buf, 25, 0, 4);
+
+            buf = BitConverter.GetBytes(Package.MaxAnimAddr);
+            CopyFromArrayToArry(ref MainPackage, ref buf, 29, 0, 4);
+
+            buf = BitConverter.GetBytes(Package.BulletCurner);
+            CopyFromArrayToArry(ref MainPackage, ref buf, 33, 0, 4);
+
+            return MainPackage;
+        }
+
     }
 }

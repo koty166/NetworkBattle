@@ -39,19 +39,19 @@ namespace NetworkLibrary
             List<Person> ls = (List<Person>)((object[])ob)[1];
             TcpClient Sender = new TcpClient();
 
-            for (int i = 0; i < 128; i++)
+            for (int i = 0; i < 64; i++)
             {
                 try
                 {
                     Sender.Connect(Addr, 7778);
                     break;
                 }
-                catch { }
+                catch(Exception ex) { FileTools.Log(ex.Message); }
             }
             if (!Sender.Connected)
                 return;
 
-            Sender.GetStream().Write(BitConverter.GetBytes(ls.Count - 1),0,4);
+            Sender.GetStream().Write(BitConverter.GetBytes(ls.Count),0,4);
 
             byte[] MainPackage = new byte[37], buf;
 
@@ -62,40 +62,19 @@ namespace NetworkLibrary
                     Strings = i.ToString().Split('.');
             }
 
-            FileTools.Log($"Sended ip:{Strings[0]}.{Strings[1]}.{Strings[2]}.{Strings[3]}");
+            FileTools.Log($"Sended ip:{Strings[0]}.{Strings[1]}.{Strings[2]}.{Strings[3]}");//заменить на последние 2 байта ip
 
-            for (int i = 0; i < ls.Count - 1; i++)
+            for (int i = 0; i < ls.Count; i++)
             {
+                MainPackage = ToolsClass.ConvertPackageToArray((NetDataPackage)ls[i]);
+
                 MainPackage[0] = byte.Parse(Strings[0]);
                 MainPackage[1] = byte.Parse(Strings[1]);
                 MainPackage[2] = byte.Parse(Strings[2]);
                 MainPackage[3] = byte.Parse(Strings[3]);
 
                 MainPackage[4] = 0;
-
-                buf = BitConverter.GetBytes((int)ls[i].ID);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 5, 0, 4);
-
-                buf = BitConverter.GetBytes(ls[i].X);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 9, 0, 4);
-
-                buf = BitConverter.GetBytes(ls[i].Y);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 13, 0, 4);
-
-                buf = BitConverter.GetBytes(ls[i].XSpeed);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 17, 0, 4);
-
-                buf = BitConverter.GetBytes(ls[i].YSpeed);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 21, 0, 4);
-
-                buf = BitConverter.GetBytes(8);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 25, 0, 4);
-
-                buf = BitConverter.GetBytes(8);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 29, 0, 4);
-
-                buf = BitConverter.GetBytes(-1);
-                ToolsClass.CopyFromArrayToArry(ref MainPackage, ref buf, 33, 0, 4);
+               
 
                 Sender.GetStream().Write(MainPackage,0,MainPackage.Length);
             }
@@ -109,17 +88,18 @@ namespace NetworkLibrary
             List<Person> ls = (List<Person>)((object[])ob)[1];
             while (true)
             {
-                PersonNetDataPackage PersonData = new PersonNetDataPackage();
-                PackageReciever.GetPackage(PersonData,ls);
+                NetDataPackage PersonData = new NetDataPackage();
+                GetPackage(PersonData,ls);
                 FileTools.Log("Package got");
 
                 Event?.Invoke(PersonData);
             }
         }
 
-        static void ReadFromBuffer(PersonNetDataPackage PersonData, byte[] Buffer, List<Person> ls)
+        static void ReadFromBuffer(NetDataPackage PersonData, byte[] Buffer, List<Person> ls)
         {
-            if (Buffer[4] == 3)
+           
+            if (Buffer[4] == 2)
             {
                 Thread SendPersons = new Thread(new ParameterizedThreadStart(SendPersonList));
                 string RemoveAddr = Buffer[0].ToString() + "." + Buffer[1].ToString() + "." + Buffer[2].ToString() + "." + Buffer[3].ToString();
@@ -127,44 +107,19 @@ namespace NetworkLibrary
                 object[] ob = new object[2];
                 ob[0] = RemoveAddr;
                 ob[1] = ls;
-               
-                    SendPersons.Start(ob);//Start sending person list
-                    PersonData.PersonID = 0;
-                    PersonData.X = Buffer[0];
-                    PersonData.Y = Buffer[1];
-                    PersonData.XSpeed = Buffer[2];
-                    PersonData.YSpeed = Buffer[3];
 
-                    ls.Add(new Person()
-                    {
-                        ID = Buffer[3],
-                        X = BitConverter.ToInt32(Buffer, 5),
-                        Y = BitConverter.ToInt32(Buffer, 9),
-                        XSpeed = BitConverter.ToInt32(Buffer, 13),
-                        YSpeed = BitConverter.ToInt32(Buffer, 17)
-                    });
+                SendPersons.Start(ob);//Start sending person list
 
+                ls.Add((Person)ToolsClass.ArrayToNetDataPackege(Buffer));
             }
             else
             {
-                PersonData.PersonID = Buffer[5];
-                PersonData.X = BitConverter.ToInt32(Buffer, 9);
-                PersonData.Y = BitConverter.ToInt32(Buffer, 13);
-                PersonData.XSpeed = BitConverter.ToInt32(Buffer, 17);
-                PersonData.YSpeed = BitConverter.ToInt32(Buffer, 21);
-                PersonData.AnimAddr = BitConverter.ToInt32(Buffer, 25);
-                PersonData.AnimLenght = BitConverter.ToInt32(Buffer, 29);
-                PersonData.BulletCurner = BitConverter.ToInt32(Buffer, 33);
-
-                if (Buffer[4] == 0)
-                    PersonData.IsNewPerson = true;
-                else
-                    PersonData.IsNewPerson = false;
+                PersonData = ToolsClass.ArrayToNetDataPackege(Buffer);
 
             }
         }
 
-        static void GetPackage(PersonNetDataPackage PersonData, List<Person> ls, int Port = 7777)
+        static void GetPackage(NetDataPackage PersonData, List<Person> ls, int Port = 7777)
         {
             byte[] Buffer;
             IPEndPoint RemoveIPEndPoint = null;
@@ -194,7 +149,7 @@ namespace NetworkLibrary
                 Client.GetStream().Read(buf,0,37);
                 AddEv?.Invoke(IPAddress.Parse(buf[0] + "." + buf[1] + "." + buf[2] + "." + buf[3]), 7777);
 
-                PersonNetDataPackage PersonData = new PersonNetDataPackage();
+                NetDataPackage PersonData = new NetDataPackage();
                 ReadFromBuffer(PersonData,buf,null);
 
                 Event?.BeginInvoke(PersonData,null,null);
